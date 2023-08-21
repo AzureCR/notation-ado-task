@@ -14,51 +14,34 @@ import { getVaultCredentials } from './lib/credentials';
 export async function sign(): Promise<void> {
     const artifactRefs = getArtifactReferences();
     const keyid = taskLib.getInput('keyid', true) || '';
-    const cacerts = taskLib.getInput('cacerts', false) || '';
-    const selfSignedCert = taskLib.getBoolInput('selfSigned', false);
     const signatureFormat = taskLib.getInput('signatureFormat', false) || 'cose';
     const allowReferrerAPI = taskLib.getBoolInput('allowReferrersAPI', false);
     const debug = taskLib.getVariable('system.debug');
-
-    await installPlugin();
-
-    let env = { ...process.env, ...await getVaultCredentials() };
+    let env = { ...process.env };
     if (allowReferrerAPI) {
         env["NOTATION_EXPERIMENTAL"] = "1";
     }
 
-    // run notation sign for each artifact
-    let failedArtifactRefs = [];
-    for (const artifactRef of artifactRefs) {
-        const code = await taskLib.tool(NOTATION_BINARY)
-            .arg(['sign', artifactRef,
-                '--plugin', 'azure-kv',
-                '--id', keyid,
-                '--signature-format', signatureFormat])
-            .argIf(allowReferrerAPI, '--allow-referrers-api')
-            .argIf(cacerts, `--plugin-config=ca_certs=${cacerts}`)
-            .argIf(selfSignedCert, '--plugin-config=self_signed=true')
-            .argIf(debug && debug.toLowerCase() === 'true', '--debug')
-            .exec({ env: env });
-
-        if (code !== 0) {
-            failedArtifactRefs.push(artifactRef);
-        }
-    }
-
-    // output conclusion
-    console.log(`Total artifacts: ${artifactRefs.length}, succeeded: ${artifactRefs.length - failedArtifactRefs.length}, failed: ${failedArtifactRefs.length}`)
-    if (failedArtifactRefs.length > 0) {
-        throw new Error(`Failed to sign artifacts: ${failedArtifactRefs.join(', ')}`);
-    }
-}
-
-// install plugin
-async function installPlugin(): Promise<void> {
     const pluginName = taskLib.getInput('plugin', true);
     switch (pluginName) {
         case 'azureKeyVault':
+            // azure-kv plugin specific inputs
+            const cacerts = taskLib.getInput('cacerts', false) || '';
+            const selfSignedCert = taskLib.getBoolInput('selfSigned', false);
+            const keyVaultPluginEnv = { ...env, ...await getVaultCredentials() }
             await installAzureKV();
+            await notationRunner(artifactRefs, async (artifactRef: string) => {
+                return taskLib.tool(NOTATION_BINARY)
+                    .arg(['sign', artifactRef,
+                        '--plugin', 'azure-kv',
+                        '--id', keyid,
+                        '--signature-format', signatureFormat])
+                    .argIf(allowReferrerAPI, '--allow-referrers-api')
+                    .argIf(cacerts, `--plugin-config=ca_certs=${cacerts}`)
+                    .argIf(selfSignedCert, '--plugin-config=self_signed=true')
+                    .argIf(debug && debug.toLowerCase() === 'true', '--debug')
+                    .exec({ env: keyVaultPluginEnv });
+            })
             break;
         default:
             throw new Error(`Unknown plugin: ${pluginName}`);
@@ -97,4 +80,22 @@ function getAzureKVPluginVersion(): string {
         throw new Error(`Cannot find Notation version ${notationVersion} in ${AZURE_KV_VERSION_LOCK_FILE}`);
     }
     return versionMap[notationVersion];
+}
+
+// notationRunner runs the notation command for each artifact.
+async function notationRunner(artifactRefs: string[], runCommand: (artifactRef: string) => Promise<number>): Promise<void> {
+    // run notation command for each artifact
+    let failedArtifactRefs = [];
+    for (const artifactRef of artifactRefs) {
+        const code = await runCommand(artifactRef)
+        if (code !== 0) {
+            failedArtifactRefs.push(artifactRef);
+        }
+    }
+
+    // output conclusion
+    console.log(`Total artifacts: ${artifactRefs.length}, succeeded: ${artifactRefs.length - failedArtifactRefs.length}, failed: ${failedArtifactRefs.length}`)
+    if (failedArtifactRefs.length > 0) {
+        throw new Error(`Failed to run the command for artifacts: ${failedArtifactRefs.join(', ')}`);
+    }
 }
