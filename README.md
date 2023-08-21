@@ -40,13 +40,18 @@ steps:
     repository: <repository_name>
     command: 'buildAndPush'
     Dockerfile: './Dockerfile'
+# install notation
+- task: notation@0
+  inputs:
+    command: 'install'
+    version: '1.0.0'
 # automatically detect the artifact pushed by Docker task 
 # and sign the artifact.
 - task: notation@0
   inputs:
     version: '1.0.0'
     command: 'sign'
-    plugin: 'azurekv'
+    plugin: 'azureKeyVault'
     azurekvServiceConection: <azurerm_service_connection>
     keyid: <key_id>
     selfSigned: true
