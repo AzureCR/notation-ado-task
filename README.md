@@ -44,6 +44,7 @@ steps:
 # and sign the artifact.
 - task: notation@0
   inputs:
+    version: '1.0.0'
     command: 'sign'
     plugin: 'azurekv'
     azurekvServiceConection: <azurerm_service_connection>
@@ -67,6 +68,7 @@ steps:
 # notation verify
 - task: notation@0
   inputs:
+    version: '1.0.0'
     command: 'verify'
     artifactRefs: '<registry_host>/<repository>@<digest>'
     trustpolicy: $(Build.SourcesDirectory)/.pipeline/trustpolicy.json
@@ -79,16 +81,16 @@ steps:
 `string`. Required. Allowed values: `install`, `sign` and `verify`.
 
 `artifactRefs` - Artifact References  
-`string`. The container artifact reference with digest. If multiple references are used, please use comma to seprate them. If it was not specified, the task will automatially detact it from previous Docker task.
+`string`. The container artifact reference with digest. If multiple references are used, please use comma to separate them. If it was not specified, the task will automatically detect it from previous Docker task.
 
 `plugin` - Plugin  
-`string`. Required for sign command. Allowed values: `azurekv`.
+`string`. Required for sign command. Allowed values: `azure-kv`.
 
 `azurekvServiceConnection` - Azure Key Vault Service Connection  
-`string`. Required for `azurekv` plugin. The Azure Resource Manager service connection for accessing Azure Key Vualt.
+`string`. Required for `azure-kv` plugin. The Azure Resource Manager service connection for accessing Azure Key Vualt.
 
 `keyid` - Key ID  
-`string`. Required for `azurekv` plugin. The key identifier of an Azure Key Vault certificate.
+`string`. Required for `azure-kv` plugin. The key identifier of an Azure Key Vault certificate.
 
 `selfSigned` - Self signed  
 `boolean`. Whether the certficate is self-signed certificate.

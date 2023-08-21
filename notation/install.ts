@@ -4,6 +4,8 @@ import * as toolLib from 'azure-pipelines-tool-lib/tool';
 
 import { getDownloadInfo, installFromURL } from './lib/install';
 
+import { NOTATION_BINARY } from './lib/constants';
+
 const NOTATION_VERSION_FILE = 'notation_versions.json';
 
 export async function install(): Promise<void> {
@@ -16,7 +18,7 @@ export async function install(): Promise<void> {
         // for custom version, download the notation from specified URL
         version = "1.0.0-UNRELEASED"
         downloadURL = taskLib.getInput('url', true) || '';
-        checksum = taskLib.getInput('checksum', false) || '';
+        checksum = taskLib.getInput('checksum', true) || '';
     } else {
         const versionRange = taskLib.getInput('version', true);
         if (!versionRange) {
@@ -40,7 +42,7 @@ export async function install(): Promise<void> {
     // add to path for current process
     process.env['PATH'] = `${extractPath}${path.delimiter}${process.env['PATH']}`;
     // cache tool
-    toolLib.cacheDir(extractPath, 'notation', version);
+    toolLib.cacheDir(extractPath, NOTATION_BINARY, version);
 
     console.log(`Notation v${version} is installed`);
 }

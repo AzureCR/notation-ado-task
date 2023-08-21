@@ -12,10 +12,7 @@ export function getConfigHome(): string {
         case 'darwin':
             return path.join(os.homedir(), 'Library', 'Application Support');
         case 'linux':
-            if (process.env.XDG_CONFIG_HOME) {
-                return process.env.XDG_CONFIG_HOME;
-            }
-            return path.join(os.homedir(), '.config');
+            return process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(os.homedir(), '.config');
         default:
             throw new Error(`Unknown platform: ${platform}`);
     }

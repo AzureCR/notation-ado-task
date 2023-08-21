@@ -4,34 +4,33 @@ import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
 import * as toolLib from 'azure-pipelines-tool-lib/tool';
 
+import { AZURE_KV_PLUGIN_VERSION_FILE, AZURE_KV_VERSION_LOCK_FILE, NOTATION, NOTATION_BINARY, PLUGINS } from './lib/constants';
 import { getDownloadInfo, installFromURL } from './lib/install';
 
 import { getArtifactReferences } from './lib/variables';
 import { getConfigHome } from './lib/fs';
 import { getVaultCredentials } from './lib/credentials';
 
-const AZURE_KV_PLUGIN_VERSION_FILE = 'azure_kv_versions.json';
-const AZURE_KV_VERSION_LOCK_FILE = 'azure_kv_version_lock.json';
-
 export async function sign(): Promise<void> {
     const artifactRefs = getArtifactReferences();
     const keyid = taskLib.getInput('keyid', true) || '';
     const cacerts = taskLib.getInput('cacerts', false) || '';
-    const selfSignedCert = taskLib.getBoolInput('selfSigned', false) === true;
+    const selfSignedCert = taskLib.getBoolInput('selfSigned', false);
     const signatureFormat = taskLib.getInput('signatureFormat', false) || 'cose';
     const allowReferrerAPI = taskLib.getBoolInput('allowReferrersAPI', false);
-    const debug = taskLib.getVariable('system.debug')
+    const debug = taskLib.getVariable('system.debug');
 
     await installPlugin();
 
-    let env = { ...process.env, ...await getVaultCredentials() }
+    let env = { ...process.env, ...await getVaultCredentials() };
     if (allowReferrerAPI) {
-        env["NOTATION_EXPERIMENTAL"] = "1"
+        env["NOTATION_EXPERIMENTAL"] = "1";
     }
 
+    // run notation sign for each artifact
+    let failedArtifactRefs = [];
     for (const artifactRef of artifactRefs) {
-        // run notation sign
-        const code = await taskLib.tool('notation')
+        const code = await taskLib.tool(NOTATION_BINARY)
             .arg(['sign', artifactRef,
                 '--plugin', 'azure-kv',
                 '--id', keyid,
@@ -43,17 +42,22 @@ export async function sign(): Promise<void> {
             .exec({ env: env });
 
         if (code !== 0) {
-            throw new Error(`Failed to sign the artifact: ${artifactRef}`);
+            failedArtifactRefs.push(artifactRef);
         }
     }
-    console.log(`Successfully signed ${artifactRefs.length} artifacts`);
+
+    // output conclusion
+    console.log(`Total artifacts: ${artifactRefs.length}, succeeded: ${artifactRefs.length - failedArtifactRefs.length}, failed: ${failedArtifactRefs.length}`)
+    if (failedArtifactRefs.length > 0) {
+        throw new Error(`Failed to sign artifacts: ${failedArtifactRefs.join(', ')}`);
+    }
 }
 
 // install plugin
 async function installPlugin(): Promise<void> {
     const pluginName = taskLib.getInput('plugin', true);
     switch (pluginName) {
-        case 'azurekv':
+        case 'azureKeyVault':
             await installAzureKV();
             break;
         default:
@@ -68,7 +72,7 @@ async function installAzureKV(): Promise<void> {
     if (os.platform() == 'win32') {
         binaryName += '.exe';
     }
-    const pluginDir = path.join(getConfigHome(), 'notation', 'plugins', 'azure-kv');
+    const pluginDir = path.join(getConfigHome(), NOTATION, PLUGINS, 'azure-kv');
     if (taskLib.exist(path.join(pluginDir, binaryName))) {
         console.log('Azure KV plugin is already installed');
         return;
@@ -83,7 +87,7 @@ async function installAzureKV(): Promise<void> {
 
 function getAzureKVPluginVersion(): string {
     // get the Azure KV plugin version based on the version lock file.
-    const notationVersion = toolLib.findLocalToolVersions('notation')[0];
+    const notationVersion = toolLib.findLocalToolVersions(NOTATION_BINARY)[0];
 
     // read the version lock file
     const versionLockFile = path.join(__dirname, 'data', AZURE_KV_VERSION_LOCK_FILE);

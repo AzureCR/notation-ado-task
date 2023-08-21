@@ -1,5 +1,6 @@
 import * as taskLib from 'azure-pipelines-task-lib/task';
 
+import { NOTATION_BINARY } from './lib/constants';
 import { install } from './install';
 import { sign } from './sign'
 import { verify } from './verify';
@@ -9,14 +10,19 @@ async function run() {
         let command = taskLib.getInput('command', true);
         switch (command) {
             case 'install':
-                await checkAndInstall();
+                if (taskLib.which(NOTATION_BINARY, false)) {
+                    throw new Error('Notation is already installed, please do not install it again.');
+                }
+                await install();
                 break;
             case 'sign':
-                await checkAndInstall();
+                // check if notation is installed before sign
+                taskLib.which(NOTATION_BINARY, true);
                 await sign();
                 break;
             case 'verify':
-                await checkAndInstall();
+                // check if notation is installed before verify
+                taskLib.which(NOTATION_BINARY, true);
                 await verify();
                 break;
             default:
@@ -29,17 +35,6 @@ async function run() {
             taskLib.setResult(taskLib.TaskResult.Failed, 'An unknown error occurred.');
         }
     }
-}
-
-// Check if notation is installed, if not, install it.
-// Notation can only be installed once per pipeline run.
-async function checkAndInstall(): Promise<void> {
-    if (taskLib.which('notation', false)) {
-        console.log('Notation is already installed');
-        return
-    }
-
-    await install();
 }
 
 run();

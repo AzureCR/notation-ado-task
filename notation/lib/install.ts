@@ -15,8 +15,9 @@ export async function installFromURL(downloadURL: string, expectedChecksum: stri
     if (!expectedChecksum) {
         console.log(`Checksum is not provided for ${downloadURL}, skip the validation`);
     } else {
-        if (expectedChecksum !== await computeChecksum(downloadPath)) {
-            throw new Error(`Checksum validation failed. Expected: ${expectedChecksum} Actual: ${computeChecksum(downloadPath)}`);
+        const checksum = await computeChecksum(downloadPath);
+        if (expectedChecksum !== checksum) {
+            throw new Error(`Checksum validation failed. Expected: ${expectedChecksum} Actual: ${checksum}`);
         }
         console.log(`Checksum validated: ${expectedChecksum}`);
     }

@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "notation2",
     "name": "Notation",
-    "version": "0.2.63",
+    "version": "0.2.69",
     "publisher": "notaryproject",
     "targets": [
         {
