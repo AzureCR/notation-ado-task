@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 69
+        "Patch": 72
     },
     "groups": [
         {
@@ -192,7 +192,7 @@
     ],
     "execution": {
         "Node": {
-            "target": "index.js"
+            "target": "src/index.js"
         }
     }
 }

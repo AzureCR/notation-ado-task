@@ -2,7 +2,7 @@
   "name": "notation",
   "version": "1.0.0",
   "description": "Azure Pipepine Task for setting up Notation CLI, sign and verify with Notation",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -b"

@@ -90,7 +90,7 @@ function getAzureKVPluginVersion(): string {
     const notationVersion = toolLib.findLocalToolVersions(NOTATION_BINARY)[0];
 
     // read the version lock file
-    const versionLockFile = path.join(__dirname, 'data', AZURE_KV_VERSION_LOCK_FILE);
+    const versionLockFile = path.join(__dirname, '..', 'data', AZURE_KV_VERSION_LOCK_FILE);
     const versionLockData = fs.readFileSync(versionLockFile, 'utf8');
     const versionMap = JSON.parse(versionLockData);
     if (!(notationVersion in versionMap)) {

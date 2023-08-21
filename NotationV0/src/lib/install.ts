@@ -40,7 +40,7 @@ async function extractBinary(filePath: string, extractPath: string): Promise<str
 // Get the download URL and checksum for the notation binary 
 // based on the version
 export function getDownloadInfo(versionRange: string, versionFileName: string): { version: string, url: string, checksum: string } {
-    const versionFile = path.join(path.dirname(__dirname), 'data', versionFileName);
+    const versionFile = path.join(__dirname, '..', '..', 'data', versionFileName);
     const versionData = fs.readFileSync(versionFile, 'utf8');
     const versionList = JSON.parse(versionData);
 

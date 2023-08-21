@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "notation2",
     "name": "Notation",
-    "version": "0.2.69",
+    "version": "0.2.72",
     "publisher": "notaryproject",
     "targets": [
         {
@@ -18,7 +18,7 @@
     },
     "files": [
         {
-            "path": "notation"
+            "path": "NotationV0"
         }
     ],
     "contributions": [
@@ -29,7 +29,7 @@
                 "ms.vss-distributed-task.tasks"
             ],
             "properties": {
-                "name": "notation"
+                "name": "NotationV0"
             }
         }
     ]
