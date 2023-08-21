@@ -7,12 +7,13 @@ export function getArtifactReferences(): string[] {
     const artifactRefsInput = taskLib.getInput('artifactRefs', false);
     if (!artifactRefsInput) {
         artifactRefs = getArtifactReferencesFromDockerTask();
-        if (artifactRefs.length === 0) {
-            throw new Error('Artifact references are not specified');
-        }
         console.log("Got the artifact references from Docker task.")
     } else {
         artifactRefs = artifactRefsInput.split(',');
+    }
+
+    if (artifactRefs.length === 0) {
+        throw new Error('Artifact references are not specified');
     }
     console.log(`Artifact references: ${artifactRefs}`)
     return artifactRefs;
