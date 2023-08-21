@@ -74,7 +74,7 @@ async function installAzureKV(): Promise<void> {
     }
     const pluginDir = path.join(getConfigHome(), NOTATION, PLUGINS, 'azure-kv');
     if (taskLib.exist(path.join(pluginDir, binaryName))) {
-        console.log('Azure KV plugin is already installed');
+        console.log('notation-azure-kv plugin is already installed');
         return;
     }
 
