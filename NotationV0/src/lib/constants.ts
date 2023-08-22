@@ -1,6 +1,6 @@
 // task constants
 export const AZURE_KV_PLUGIN_VERSION_FILE = 'azure_kv_versions.json';
-export const AZURE_KV_VERSION_LOCK_FILE = 'azure_kv_version_lock.json';
+export const NOTATION_VERSION_FILE = 'notation_versions.json';
 
 // notation constant
 export const PLUGINS = 'plugins';

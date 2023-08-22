@@ -2,7 +2,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
 
-import { AZURE_KV_PLUGIN_VERSION_FILE, AZURE_KV_VERSION_LOCK_FILE, NOTATION, NOTATION_BINARY, PLUGINS } from './lib/constants';
+import { AZURE_KV_PLUGIN_VERSION_FILE, NOTATION, NOTATION_BINARY, PLUGINS } from './lib/constants';
 import { getDownloadInfo, installFromURL } from './lib/install';
 
 import { getArtifactReferences } from './lib/variables';
@@ -61,9 +61,6 @@ async function installAzureKV(): Promise<void> {
     }
 
     // get azure-kv latest v1.x download info
-    const urlInfo = getDownloadInfo("1", AZURE_KV_PLUGIN_VERSION_FILE);
-    const downloadURL = urlInfo.url;
-    const checksum = urlInfo.checksum;
-
-    await installFromURL(downloadURL, checksum, pluginDir);
+    const downloadInfo = getDownloadInfo("1", AZURE_KV_PLUGIN_VERSION_FILE);
+    await installFromURL(downloadInfo.url, downloadInfo.checksum, pluginDir);
 }

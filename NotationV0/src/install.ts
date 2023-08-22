@@ -3,7 +3,7 @@ import * as taskLib from 'azure-pipelines-task-lib/task';
 
 import { getDownloadInfo, installFromURL } from './lib/install';
 
-const NOTATION_VERSION_FILE = 'notation_versions.json';
+import { NOTATION_VERSION_FILE } from './lib/constants';
 
 export async function install(): Promise<void> {
     // the notation download URL
