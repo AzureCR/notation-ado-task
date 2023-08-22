@@ -1,8 +1,6 @@
-import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
-import * as toolLib from 'azure-pipelines-tool-lib/tool';
 
 import { AZURE_KV_PLUGIN_VERSION_FILE, AZURE_KV_VERSION_LOCK_FILE, NOTATION, NOTATION_BINARY, PLUGINS } from './lib/constants';
 import { getDownloadInfo, installFromURL } from './lib/install';
@@ -62,23 +60,10 @@ async function installAzureKV(): Promise<void> {
         return;
     }
 
-    const urlInfo = getDownloadInfo(getAzureKVPluginVersion(), AZURE_KV_PLUGIN_VERSION_FILE);
+    // get azure-kv latest v1.x download info
+    const urlInfo = getDownloadInfo("1", AZURE_KV_PLUGIN_VERSION_FILE);
     const downloadURL = urlInfo.url;
     const checksum = urlInfo.checksum;
 
     await installFromURL(downloadURL, checksum, pluginDir);
-}
-
-function getAzureKVPluginVersion(): string {
-    // get the Azure KV plugin version based on the version lock file.
-    const notationVersion = toolLib.findLocalToolVersions(NOTATION_BINARY)[0];
-
-    // read the version lock file
-    const versionLockFile = path.join(__dirname, '..', 'data', AZURE_KV_VERSION_LOCK_FILE);
-    const versionLockData = fs.readFileSync(versionLockFile, 'utf8');
-    const versionMap = JSON.parse(versionLockData);
-    if (!(notationVersion in versionMap)) {
-        throw new Error(`Cannot find Notation version ${notationVersion} in ${AZURE_KV_VERSION_LOCK_FILE}`);
-    }
-    return versionMap[notationVersion];
 }

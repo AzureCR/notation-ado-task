@@ -1,10 +1,7 @@
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
-import * as toolLib from 'azure-pipelines-tool-lib/tool';
 
 import { getDownloadInfo, installFromURL } from './lib/install';
-
-import { NOTATION_BINARY } from './lib/constants';
 
 const NOTATION_VERSION_FILE = 'notation_versions.json';
 
@@ -41,8 +38,6 @@ export async function install(): Promise<void> {
     taskLib.prependPath(extractPath);
     // add to path for current process
     process.env['PATH'] = `${extractPath}${path.delimiter}${process.env['PATH']}`;
-    // cache tool
-    toolLib.cacheDir(extractPath, NOTATION_BINARY, version);
 
     console.log(`Notation v${version} is installed`);
 }
