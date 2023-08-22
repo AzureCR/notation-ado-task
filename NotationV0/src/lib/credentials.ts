@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
 
-export async function getVaultCredentials(): Promise<{ [key: string]: string | undefined }> {
+export async function getVaultCredentials(): Promise<{ [key: string]: string }> {
     let connectedService = taskLib.getInput("azurekvServiceConection", true);
     if (!connectedService) {
         console.log("No Azure Key Vualt service connection endpoint is specified");

@@ -22,14 +22,14 @@ export function getArtifactReferences(): string[] {
 // get artifact references from previous docker push task through 
 // "RESOURCE_URIS" variable.
 function getArtifactReferencesFromDockerTask(): string[] {
-    const resourceUris = taskLib.getVariable('RESOURCE_URIS');
-    if (!resourceUris) {
+    const resourceURIs = taskLib.getVariable('RESOURCE_URIS');
+    if (!resourceURIs) {
         return [];
     }
 
     let references = [];
-    const resourceUrisArray = resourceUris.split(',');
-    for (const uri of resourceUrisArray) {
+    const resourceURIArray = resourceURIs.split(',');
+    for (const uri of resourceURIArray) {
         const parts = uri.split('://');
         if (parts.length !== 2) {
             throw new Error(`Invalid resource URI: ${uri}`);

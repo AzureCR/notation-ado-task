@@ -5,6 +5,7 @@ import { NOTATION, NOTATION_BINARY, TRUST_STORE, X509 } from './lib/constants';
 
 import { getArtifactReferences } from './lib/variables';
 import { getConfigHome } from './lib/fs';
+import { notationRunner } from './lib/runner';
 
 export async function verify(): Promise<void> {
     const artifactRefs = getArtifactReferences();
@@ -25,30 +26,19 @@ export async function verify(): Promise<void> {
     }
 
     // run notation verify for each artifact
-    let failedArtifactRefs = [];
-    for (const artifactRef of artifactRefs) {
-        const code = await taskLib.tool(NOTATION_BINARY)
+    await notationRunner(artifactRefs, async (artifactRef: string) => {
+        return taskLib.tool(NOTATION_BINARY)
             .arg(['verify', artifactRef, '--verbose'])
             .argIf(allowReferrerAPI, '--allow-referrers-api')
             .argIf(debug && debug.toLowerCase() === 'true', '--debug')
             .exec({ env: env });
-
-        if (code !== 0) {
-            failedArtifactRefs.push(artifactRef);
-        }
-    }
-
-    // output conclusion
-    console.log(`Total artifacts: ${artifactRefs.length}, succeeded: ${artifactRefs.length - failedArtifactRefs.length}, failed: ${failedArtifactRefs.length}`)
-    if (failedArtifactRefs.length > 0) {
-        throw new Error(`Failed to verify artifacts: ${failedArtifactRefs.join(', ')}`);
-    }
+    })
 }
 
 async function configTrustPolicy(trustpolicy: string): Promise<void> {
     // run notation command to install trust policy
     let code = await taskLib.tool(NOTATION_BINARY)
-        .arg(['policy', 'import', trustpolicy])
+        .arg(['policy', 'import', '--force', trustpolicy])
         .exec();
     if (code !== 0) {
         throw new Error(`Failed to import trust policy: ${trustpolicy}`);

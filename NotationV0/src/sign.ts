@@ -10,6 +10,7 @@ import { getDownloadInfo, installFromURL } from './lib/install';
 import { getArtifactReferences } from './lib/variables';
 import { getConfigHome } from './lib/fs';
 import { getVaultCredentials } from './lib/credentials';
+import { notationRunner } from './lib/runner';
 
 export async function sign(): Promise<void> {
     const artifactRefs = getArtifactReferences();
@@ -80,22 +81,4 @@ function getAzureKVPluginVersion(): string {
         throw new Error(`Cannot find Notation version ${notationVersion} in ${AZURE_KV_VERSION_LOCK_FILE}`);
     }
     return versionMap[notationVersion];
-}
-
-// notationRunner runs the notation command for each artifact.
-async function notationRunner(artifactRefs: string[], runCommand: (artifactRef: string) => Promise<number>): Promise<void> {
-    // run notation command for each artifact
-    let failedArtifactRefs = [];
-    for (const artifactRef of artifactRefs) {
-        const code = await runCommand(artifactRef)
-        if (code !== 0) {
-            failedArtifactRefs.push(artifactRef);
-        }
-    }
-
-    // output conclusion
-    console.log(`Total artifacts: ${artifactRefs.length}, succeeded: ${artifactRefs.length - failedArtifactRefs.length}, failed: ${failedArtifactRefs.length}`)
-    if (failedArtifactRefs.length > 0) {
-        throw new Error(`Failed to run the command for artifacts: ${failedArtifactRefs.join(', ')}`);
-    }
 }

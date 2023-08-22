@@ -6,27 +6,23 @@ import * as toolLib from 'azure-pipelines-tool-lib/tool';
 
 import { computeChecksum } from './crypto';
 
-export async function installFromURL(downloadURL: string, expectedChecksum: string | undefined, extractPath: string): Promise<void>{
+export async function installFromURL(downloadURL: string, expectedChecksum: string, extractPath: string): Promise<void> {
     // Download notation
     const fileName = path.basename(downloadURL);
     const downloadPath = await toolLib.downloadTool(downloadURL, fileName);
 
     // Validate checksum
-    if (!expectedChecksum) {
-        console.log(`Checksum is not provided for ${downloadURL}, skip the validation`);
-    } else {
-        const checksum = await computeChecksum(downloadPath);
-        if (expectedChecksum !== checksum) {
-            throw new Error(`Checksum validation failed. Expected: ${expectedChecksum} Actual: ${checksum}`);
-        }
-        console.log(`Checksum validated: ${expectedChecksum}`);
+    const checksum = await computeChecksum(downloadPath);
+    if (expectedChecksum !== checksum) {
+        throw new Error(`Checksum validation failed. Expected: "${expectedChecksum}" Actual: "${checksum}"`);
     }
+    console.log(`Checksum validated: ${expectedChecksum}`);
 
     taskLib.mkdirP(extractPath);
 
     // Extract notation binary
     await extractBinary(downloadPath, extractPath);
-} 
+}
 
 async function extractBinary(filePath: string, extractPath: string): Promise<string> {
     if (filePath.endsWith('.zip')) {
