@@ -10,6 +10,9 @@ async function run() {
         let command = taskLib.getInput('command', true);
         switch (command) {
             case 'install':
+                if (taskLib.which(NOTATION_BINARY, false)) {
+                    throw new Error('Notation is already installed, please do not install it again.');
+                }
                 await install();
                 break;
             case 'sign':

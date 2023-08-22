@@ -7,9 +7,10 @@ export async function notationRunner(artifactRefs: string[], runCommand: (artifa
         const code = await runCommand(artifactRef)
         if (code !== 0) {
             failedArtifactRefs.push(artifactRef);
-        } else {
-            succeededArtifactRefs.push(artifactRef);
+            continue
         }
+
+        succeededArtifactRefs.push(artifactRef);
     }
 
     // output conclusion
