@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 75
+        "Patch": 76
     },
     "groups": [
         {
@@ -62,7 +62,7 @@
             "label": "Version",
             "defaultValue": "1.0.0",
             "required": true,
-            "helpMarkDown": "The version of Notation to install. Example: 1.0.0-rc.7, 1, 1.0, 1.0.0",
+            "helpMarkDown": "The version of Notation to install. Example: 1.0.0, 1, 1.0, 1.0.0",
             "visibleRule": "command = install && isCustomVersion = false",
             "groupName": "commandConfig"
         },
@@ -72,7 +72,7 @@
             "label": "Download URL",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "example: https://github.com/notaryproject/notation/releases/download/v1.0.0-rc.7/notation_1.0.0-rc.7_linux_amd64.tar.gz",
+            "helpMarkDown": "example: https://github.com/notaryproject/notation/releases/download/v1.0.0/notation_1.0.0_linux_amd64.tar.gz",
             "groupName": "commandConfig",
             "visibleRule": "command = install && isCustomVersion = true"
         },
@@ -82,7 +82,7 @@
             "label": "Checksum",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "The sha256 checksum of the downloaded file",
+            "helpMarkDown": "The SHA-256 checksum of the downloaded file",
             "groupName": "commandConfig",
             "visibleRule": "command = install && isCustomVersion = true"
         },
@@ -152,7 +152,7 @@
             "groupName": "pluginConfig"
         },
         {
-            "name": "cacerts",
+            "name": "caCertBundle",
             "type": "string",
             "label": "Certificate Bundle File Path",
             "required": false,
@@ -170,23 +170,23 @@
             "groupName": "pluginConfig"
         },
         {
-            "name": "trustpolicy",
+            "name": "trustPolicy",
             "type": "string",
             "label": "Trust Policy File Path",
             "required": true,
             "defaultValue": "",
             "visibleRule": "command = verify",
-            "helpMarkDown": "The path to the [trust policy](https://github.com/notaryproject/notaryproject/blob/main/specs/trust-store-trust-policy.md#trust-policy) file relative to the repository. Example: $(Build.SourcesDirectory)/path/to/trust-policy.json",
+            "helpMarkDown": "The path to the [trust policy](https://github.com/notaryproject/specifications/blob/v1.0.0/specs/trust-store-trust-policy.md#trust-policy) file relative to the repository. Example: ./path/to/trust-policy.json",
             "groupName": "commandConfig"
         },
         {
-            "name": "truststore",
+            "name": "trustStore",
             "type": "string",
             "label": "Trust Store Folder Path",
             "required": true,
             "defaultValue": "",
             "visibleRule": "command = verify",
-            "helpMarkDown": "The path to the directory containing the [trust store](https://github.com/notaryproject/notaryproject/blob/main/specs/trust-store-trust-policy.md#trust-store) relative to the repository. Example: $(Build.SourcesDirectory)/path/to/truststore/",
+            "helpMarkDown": "The path to the directory containing the [trust store](https://github.com/notaryproject/specifications/blob/v1.0.0/specs/trust-store-trust-policy.md#trust-store) relative to the repository. Example: ./path/to/truststore/",
             "groupName": "commandConfig"
         }
     ],

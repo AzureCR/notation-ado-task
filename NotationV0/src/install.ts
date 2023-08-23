@@ -7,13 +7,12 @@ import { NOTATION_VERSION_FILE } from './lib/constants';
 
 export async function install(): Promise<void> {
     // the notation download URL
-    let version: string
-    let downloadURL: string
-    let checksum: string
+    let version = '';
+    let downloadURL = '';
+    let checksum: string;
 
     if (taskLib.getBoolInput('isCustomVersion', false)) {
         // for custom version, download the notation from specified URL
-        version = "1.0.0-UNRELEASED"
         downloadURL = taskLib.getInput('url', true) || '';
         checksum = taskLib.getInput('checksum', true) || '';
     } else {
@@ -39,5 +38,9 @@ export async function install(): Promise<void> {
     // add to path for current process
     process.env['PATH'] = `${extractPath}${path.delimiter}${process.env['PATH']}`;
 
-    console.log(`Notation v${version} is installed`);
+    if (!version) {
+        console.log(`Notation is installed from ${downloadURL}`);
+    } else {
+        console.log(`Notation v${version} is installed`);
+    }
 }

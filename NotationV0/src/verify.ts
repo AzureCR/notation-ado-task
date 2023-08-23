@@ -9,16 +9,16 @@ import { notationRunner } from './lib/runner';
 
 export async function verify(): Promise<void> {
     const artifactRefs = getArtifactReferences();
-    const trustpolicy = taskLib.getInput('trustpolicy', true) || '';
-    const truststore = taskLib.getInput('truststore', true) || '';
+    const trustPolicy = taskLib.getInput('trustPolicy', true) || '';
+    const trustStore = taskLib.getInput('trustStore', true) || '';
     const allowReferrerAPI = taskLib.getBoolInput('allowReferrersAPI', false);
     const debug = taskLib.getVariable('system.debug')
 
     // config trust policy
-    await configTrustPolicy(trustpolicy);
+    await configTrustPolicy(trustPolicy);
     // config trust store
     taskLib.rmRF(path.join(getConfigHome(), NOTATION, TRUST_STORE));
-    await configTrustStore(truststore);
+    await configTrustStore(trustStore);
 
     let env = { ...process.env }
     if (allowReferrerAPI) {
@@ -35,13 +35,13 @@ export async function verify(): Promise<void> {
     })
 }
 
-async function configTrustPolicy(trustpolicy: string): Promise<void> {
+async function configTrustPolicy(trustPolicy: string): Promise<void> {
     // run notation command to install trust policy
     let code = await taskLib.tool(NOTATION_BINARY)
-        .arg(['policy', 'import', '--force', trustpolicy])
+        .arg(['policy', 'import', '--force', trustPolicy])
         .exec();
     if (code !== 0) {
-        throw new Error(`Failed to import trust policy: ${trustpolicy}`);
+        throw new Error(`Failed to import trust policy: ${trustPolicy}`);
     }
 
     code = await taskLib.tool(NOTATION_BINARY)

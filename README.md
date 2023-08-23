@@ -1,5 +1,5 @@
 # Notation for Azure DevOps Task
-> [!NOTE]
+> [!IMPORTANT]
 > The project is under development.
 
 Install Notation CLI, sign or verify container registry artifact.
@@ -52,12 +52,11 @@ steps:
     version: '1.0.0'
     command: 'sign'
     plugin: 'azureKeyVault'
-    azurekvServiceConection: <azurerm_service_connection>
+    azurekvServiceConection: <arm_service_connection>
     keyid: <key_id>
     selfSigned: true
 ```
-
-**Notation verify**
+**Notation sign**: manually provide the artifact reference with digest
 ```yaml
 trigger:
  - master
@@ -70,14 +69,42 @@ steps:
   inputs:
     containerRegistry: <docker_registry_service_connection>
     command: 'login'
+# install notation
+- task: notation@0
+  inputs:
+    command: 'install'
+    version: '1.0.0'
+# sign the artifact
+- task: notation@0
+  inputs:
+    artifactRefs: '<registry_host>/<repository>@<digest>'
+    command: 'sign'
+    plugin: 'azureKeyVault'
+    azurekvServiceConection: <arm_service_connection>
+    keyid: <key_id>
+    selfSigned: true
+```
+
+**Notation verify**
+```yaml
+trigger:
+ - main
+pool: 
+  vmImage: 'ubuntu-latest'
+
+steps:
+# login to registry
+- task: Docker@2
+  inputs:
+    containerRegistry: <docker_registry_service_connection>
+    command: 'login'
 # notation verify
 - task: notation@0
   inputs:
-    version: '1.0.0'
     command: 'verify'
     artifactRefs: '<registry_host>/<repository>@<digest>'
-    trustpolicy: $(Build.SourcesDirectory)/.pipeline/trustpolicy.json
-    truststore: $(Build.SourcesDirectory)/.pipeline/truststore/
+    trustPolicy: $(Build.SourcesDirectory)/.pipeline/trustpolicy.json
+    trustStore: $(Build.SourcesDirectory)/.pipeline/truststore/
     allowReferrersAPI: true
 ```
 
@@ -89,10 +116,10 @@ steps:
 `string`. The container artifact reference with digest. If multiple references are used, please use comma to separate them. If it was not specified, the task will automatically detect it from previous Docker task.
 
 `plugin` - Plugin  
-`string`. Required for sign command. Allowed values: `azure-kv`.
+`string`. Required for sign command. Allowed values: `azureKeyVault`.
 
 `azurekvServiceConnection` - Azure Key Vault Service Connection  
-`string`. Required for `azure-kv` plugin. The Azure Resource Manager service connection for accessing Azure Key Vualt.
+`string`. Required for `azure-kv` plugin. Select the The Azure Resource Manager service connection for the key vault if prefer to use service connection for authentication.
 
 `keyid` - Key ID  
 `string`. Required for `azure-kv` plugin. The key identifier of an Azure Key Vault certificate.
@@ -100,13 +127,13 @@ steps:
 `selfSigned` - Self signed  
 `boolean`. Whether the certficate is self-signed certificate.
 
-`cacerts` - Certificate Bundle File Path  
+`caCertBundle` - Certificate Bundle File Path  
 `string`. The certificate bundle file containing intermidiate certificates and root certificate.
 
-`trustpolicy` - Trust Policy File Path  
+`trustPolicy` - Trust Policy File Path  
 `string`. Required for `verify` command. The trust policy file path.
 
-`truststore` - Trust Store Folder Path  
+`trustStore` - Trust Store Folder Path  
 `string`. Requried for `verify` command. The trust store folder path.
 
 `signatureFormat` - Signature Format  

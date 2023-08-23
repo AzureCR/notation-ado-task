@@ -25,7 +25,7 @@ export async function sign(): Promise<void> {
     switch (pluginName) {
         case 'azureKeyVault':
             // azure-kv plugin specific inputs
-            const cacerts = taskLib.getInput('cacerts', false) || '';
+            const caCertBundle = taskLib.getInput('caCertBundle', false) || '';
             const selfSignedCert = taskLib.getBoolInput('selfSigned', false);
             const keyVaultPluginEnv = { ...env, ...await getVaultCredentials() }
             await installAzureKV();
@@ -36,7 +36,7 @@ export async function sign(): Promise<void> {
                         '--id', keyid,
                         '--signature-format', signatureFormat])
                     .argIf(allowReferrerAPI, '--allow-referrers-api')
-                    .argIf(cacerts, `--plugin-config=ca_certs=${cacerts}`)
+                    .argIf(caCertBundle, `--plugin-config=ca_certs=${caCertBundle}`)
                     .argIf(selfSignedCert, '--plugin-config=self_signed=true')
                     .argIf(debug && debug.toLowerCase() === 'true', '--debug')
                     .exec({ env: keyVaultPluginEnv });
