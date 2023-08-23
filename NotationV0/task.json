@@ -158,6 +158,7 @@
             "required": false,
             "defaultValue": "",
             "visibleRule": "plugin = azureKeyVault",
+            "helpMarkDown": "A file with root and all intermediate certificates, starting from the root certificate, following the order in the certificate chain.",
             "groupName": "pluginConfig"
         },
         {
