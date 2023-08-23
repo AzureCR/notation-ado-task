@@ -21,10 +21,13 @@ For Notation sign command, Azure Key Vault plugin will be used. User should crea
 Then create your own pipeline based on the example.
 
 ## Azure Pipeline Example
+> [!NOTE]
+> The example assumes that the default branch is main. If it's not, please follow the [guide](https://learn.microsoft.com/azure/devops/repos/git/change-default-branch?view=azure-devops#temporary-mirroring) to update the default branch.
+
 **Notation sign**: automatically detect the artifact from previous Docker task
 ```yaml
 trigger:
- - master
+ - main
 pool: 
   vmImage: 'ubuntu-latest'
 
@@ -59,7 +62,7 @@ steps:
 **Notation sign**: manually provide the artifact reference with digest
 ```yaml
 trigger:
- - master
+ - main
 pool: 
   vmImage: 'ubuntu-latest'
 
