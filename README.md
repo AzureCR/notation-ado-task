@@ -22,7 +22,7 @@ Then create your own pipeline based on the example.
 
 ## Azure Pipeline Example
 > [!NOTE]
-> The example assumes that the default branch is main. If it's not, please follow the [guide](https://learn.microsoft.com/azure/devops/repos/git/change-default-branch?view=azure-devops#temporary-mirroring) to update the default branch.
+> The example assumes that the default branch is `main`. If it's not, please follow the [guide](https://learn.microsoft.com/azure/devops/repos/git/change-default-branch?view=azure-devops#temporary-mirroring) to update the default branch.
 
 **Notation sign**: automatically detect the artifact from previous Docker task
 ```yaml
