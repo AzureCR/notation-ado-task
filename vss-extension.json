@@ -1,0 +1,36 @@
+{
+    "manifestVersion": 1,
+    "id": "notarynotation",
+    "name": "Notation",
+    "version": "0.2.77",
+    "publisher": "notaryproject",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "description": "Tools for setting up Notation CLI",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "icons": {
+        "default": "images/extension-icon.png"
+    },
+    "files": [
+        {
+            "path": "NotationV0"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "notation",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "NotationV0"
+            }
+        }
+    ]
+}
