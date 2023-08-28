@@ -1,4 +1,4 @@
-# Notation for Azure DevOps Task
+# Notation sign task for Azure DevOps pipeline
 
 This document walks you through how to create an Azure pipeline to achieve the following goals:
 
