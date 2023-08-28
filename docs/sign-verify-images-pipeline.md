@@ -92,7 +92,7 @@ steps:
 
 </details>
 
-**Option 2**: manually specify an artifact reference with digest and sign it. You need to fill out the required values according to the inputs reference.
+**Option 2**: Manually specify an artifact reference with digest and sign it. You need to fill out the required values according to the inputs reference.
 
 <details>
 
