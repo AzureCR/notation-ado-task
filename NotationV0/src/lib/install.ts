@@ -56,8 +56,19 @@ function isMatch(version: string, versionPrefix: string): boolean {
         return versionPrefix === version;
     }
 
-    // for main version, it only needs to match the prefix
-    return version.startsWith(versionPrefix);
+    // for released version, it only needs to match the prefix
+    const versionParts = version.split('.'); // major.minor.patch
+    const versionPrefixParts = versionPrefix.split('.');
+    if (versionPrefixParts.length > versionParts.length) {
+        throw new Error(`Invalid version prefix: ${versionPrefix}`);
+    }
+
+    for (let i = 0; i < versionPrefixParts.length; i++) {
+        if (versionPrefixParts[i] !== versionParts[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function fetchTarget(versionSuite: any): { version: string, url: string, checksum: string } {
