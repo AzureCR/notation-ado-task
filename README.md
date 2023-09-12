@@ -121,11 +121,11 @@ steps:
 `plugin` - Plugin  
 `string`. Required for sign command. Allowed values: `azureKeyVault`.
 
-`azurekvServiceConnection` - Azure Key Vault Service Connection  
-`string`. Required for `azure-kv` plugin. Select the The Azure Resource Manager service connection for the key vault if prefer to use service connection for authentication.
-
 `akvPluginVersion` - Azure Key Vualt Plugin Version
 `string`. Required for `azureKeyVualt` plugin. The version for Azure Key Vualt plugin. Please visit the [release page](https://github.com/Azure/notation-azure-kv/releases) to choose a released version.
+
+`azurekvServiceConnection` - Azure Key Vault Service Connection  
+`string`. Required for `azure-kv` plugin. Select the The Azure Resource Manager service connection for the key vault if prefer to use service connection for authentication.
 
 `keyid` - Key ID  
 `string`. Required for `azure-kv` plugin. The key identifier of an Azure Key Vault certificate.
