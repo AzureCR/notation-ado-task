@@ -8,14 +8,14 @@ This document walks you through how to create an Azure pipeline to achieve the f
 ## Prerequisites
 
 - You have created a Key Vault in Azure Key Vault and created a self-signed signing key and certificate. You can follow this [doc](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-sign-build-push#create-a-self-signed-certificate-azure-cli) to create self-signed key and certificate for testing purposes. If you have a CA issued certificate, see this doc for details.
-- You have created a registry in Azure Container Registry.
+- You have created a registry in ACR.
 - You have an Azure DevOps repository or GitHub repository.
 
 ## Create Service Connection
 
-Signing an image stored in ACR need the credential to access the ACR registry. User should use [Docker task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml#build-and-push) to login and the Notation task can get the credential from pipeline context.
+Signing an image stored in ACR registry requires the ACR credential. Use the [Docker task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml#build-and-push) to log in to the ACR registry. 
 
-Create a [Docker Registry service connection](https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#docker-registry-service-connection) in Azure DevOps pipeline to grant the access permission to your Azure Container Registry for the Notation tasks. 
+Create a [Docker Registry service connection](https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#docker-registry-service-connection) in Azure DevOps pipeline to grant the access permission to your ACR registry for the Notation tasks. 
 
 - Sign in to your organization (`https://dev.azure.com/{yourorganization}`) and select your project.
 - Select the **Settings** button in the bottom-left corner.
@@ -25,33 +25,51 @@ Create a [Docker Registry service connection](https://learn.microsoft.com/azure/
 - Choose **Service Principle** in the **Authentication Type** and enter the Service Principal details including your Azure Subscription and ACR registry.
 - Enter a user-friendly **Connection name** to use when referring to this service connection.
 
-Similarly, create an Azure Resource Manager service connection in Azure DevOps pipeline to grant the access permission to your Azure Key Vault for the Notation tasks.
+Similarly, Create a service connection with the connection type of [Azure Resource Manager](https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#azure-resource-manager-service-connection). This will grant the access to your Azure Key Vault:
 
-Create an [Azure Resource Manager service connection](https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#azure-resource-manager-service-connection) and grant the access permission of Azure Key Vault to this service principle:
+- Choose **Service principal (automatic)**.
+- Next, choose **Subscription** and find your Azure subscription from the drop-down list.
+- Choose an available Resource group from the drop-down list.
+- Enter a user-friendly **Service connection name** to use when referring to this service connection.
+- Save it to finish the creation.
+
+Grant the access policy to your service principal.
 
 - Open the created Azure Resource Manager service connection and click **Manage Service Principal** to enter the Azure service principal portal.
-- The `Application (client) ID` will be used to grant the permission for the service principal
-- Open the Azure Key Vault portal, and enter **Access Policies** page.
-- Create a new policy with `key sign`, `secret get` and `certificate get` permission.
-- Grant this new policy to the `Application (client) ID` accessed from the previous step.
+- Copy the `Application (client) ID`. It will be used to grant the permission for the service principal.
+- Open the Azure Key Vault portal and enter **Access Policies** page.
+- Create a new access policy with `key sign`, `secret get` and `certificate get` permission.
+- Grant this new access policy to a service principle using the `Application (client) ID` paste from the previous step.
+- Save it to finish the creation.
 
 See [this doc](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#create-a-service-connection) for more details.
 
-## Edit the sample pipeline
+## Create a pipeline and use Notation task
 
 > [!NOTE]
 > The example assumes that the default branch is `main`. If it's not, please follow the [guide](https://learn.microsoft.com/azure/devops/repos/git/change-default-branch?view=azure-devops#temporary-mirroring) to update the default branch.
 
+Create an Azure pipeline for your git repository as follows:
+
 - Navigate to the project in your AOD organization.
-- Go to **Pipelines** from the left menu and then select **New pipeline**
-- Choose your git repository.
-- Search the `Notation` task from the pipeline editing panel on the right side. Now you can use the ADO panel to add Notation tasks to your pipeline or copy from the sample workflow below.
+- Go to **Pipelines** from the left menu and then select **New pipeline**. 
+- Choose your git repository. We use the Azure DevOps repository for demonstration convenience.
+- Configure the pipeline with a **Starter Pipeline** if you are new to Azure DevOps. Review and create the pipeline by clicking on **Save and run**.
 
-There are two ways to use Notation tasks to sign images in your Azure pipeline: 
+Edit the pipeline created in the previous step. Search the `Notation` task from the pipeline editing panel on the right side. There are two ways to use Notation tasks to sign images in your Azure pipeline: use the ADO panel to add Notation tasks to your pipeline or copy from the sample Azure Pipeline file from the option 2 below.
 
-You can sign an image using its latest digest that is built and pushed to the registry by a [Docker task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml) or manually specify an artifact reference.
+### Option 1: Using editing panel
 
-You need to fill out the required values according to the input references below.
+- Choose **Install** from the drop-down list **command to run**. Click **Add** to add the `notation install` task to the pipeline. 
+- Similarly, search the `Notation` task from the pipeline editing panel and choose **Sign**. 
+- You can skip **Artifact references** since we sign an image using its latest digest that is built and pushed to the registry by a [Docker task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml). Instead, you can manually specify a digest using '<registry_host>/<repository>@<digest>'.
+- Fill out the plugin configuration in the form. We will use the default AKV plugin and the service connection that we created in the previous step. Copy your Key ID from your AKV into the **Key ID**.
+- Check the **Self-signed Certificate** since we use a self-signed certificate for demonstration convenience. Instead, you can input your certificate file path in **Certificate Bundle File Path** if you want to use a CA issued certificate.
+- Click **Add** to add the `notation sign` to the pipeline file left.
+
+### Option 2: Editing the pipeline file
+
+Copy the same pipeline template to your pipeline file. Then fill out the required values according to the references and comments below.
 
 <details>
 
@@ -64,7 +82,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-# login to registry
+# log in to registry
 - task: Docker@2
   inputs:
     containerRegistry: <your_docker_registry_service_connection>
