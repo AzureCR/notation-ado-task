@@ -46,9 +46,6 @@ See [this doc](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/
 
 ## Create a pipeline and use Notation task
 
-> [!NOTE]
-> The example assumes that the default branch is `main`. If it's not, please follow the [guide](https://learn.microsoft.com/azure/devops/repos/git/change-default-branch?view=azure-devops#temporary-mirroring) to update the default branch.
-
 Create an Azure pipeline for your git repository as follows:
 
 - Navigate to the project in your AOD organization.
@@ -56,20 +53,40 @@ Create an Azure pipeline for your git repository as follows:
 - Choose your git repository. We use the Azure DevOps repository for demonstration convenience.
 - Configure the pipeline with a **Starter Pipeline** if you are new to Azure DevOps. Review and create the pipeline by clicking on **Save and run**.
 
-Edit the pipeline created in the previous step. Search the `Notation` task from the pipeline editing panel on the right side. There are two ways to use Notation tasks to sign images in your Azure pipeline: use the ADO panel to add Notation tasks to your pipeline or copy from the sample Azure Pipeline file from the option 2 below.
+> [!NOTE]
+> The example assumes that the default branch is `main`. If it's not, please follow the [guide](https://learn.microsoft.com/azure/devops/repos/git/change-default-branch?view=azure-devops#temporary-mirroring) to update the default branch.
+
+Edit the pipeline created in the previous step. There are two ways to use Notation tasks to sign images in your Azure pipeline: use the ADO panel to add Notation tasks to your pipeline or copy from the sample Azure Pipeline file from the option 2 below.
 
 ### Option 1: Using editing panel
 
+Search the `Docker` task from the pipeline editing panel on the right side. We use its `login` command with the Docker Registry service connection to authenticate with ACR.
+
+- Choose the Docker Registry service connection created in the previous step from the **Container registry** drop-down list. Click **Add** to add the `notation install` task to the pipeline. 
+- Choose `login` from the **Command** drop-down list.
+- Click **Add** to add the `notation sign` to the pipeline file left.
+
+Similarly, search the `Docker` task from the pipeline editing panel again. We use its `buildAndPush` command to automatically build the source code to an image and push it to the target ACR repository. It will generate an image digest that will be used for signing in the next step. 
+
+- Input the repository name to **Container repository**.
+- Choose **buildAndPush** from the the **Command** drop-down list.
+- Specify the file path of Dockerfile. For example, use `./Dockerfile ` if your Dockerfile is stored in the root folder.
+- Click **Add** to add the `notation sign` to the pipeline file left.
+
+Search the `Notation` task from the pipeline editing panel on the right side. 
+
 - Choose **Install** from the drop-down list **command to run**. Click **Add** to add the `notation install` task to the pipeline. 
-- Similarly, search the `Notation` task from the pipeline editing panel and choose **Sign**. 
+- Similarly, search the `Notation` task from the pipeline editing panel again and choose **Sign**. 
 - You can skip **Artifact references** since we sign an image using its latest digest that is built and pushed to the registry by a [Docker task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml). Instead, you can manually specify a digest using '<registry_host>/<repository>@<digest>'.
-- Fill out the plugin configuration in the form. We will use the default AKV plugin and the service connection that we created in the previous step. Copy your Key ID from your AKV into the **Key ID**.
-- Check the **Self-signed Certificate** since we use a self-signed certificate for demonstration convenience. Instead, you can input your certificate file path in **Certificate Bundle File Path** if you want to use a CA issued certificate.
+- Fill out the plugin configuration in the form. We will use the default AKV plugin and the service connection created in the previous step. Copy your Key ID from your AKV into the **Key ID**.
+- Check the **Self-signed Certificate** box since we use a self-signed certificate for demonstration convenience. Instead, you can input your certificate file path in **Certificate Bundle File Path** if you want to use a CA issued certificate.
 - Click **Add** to add the `notation sign` to the pipeline file left.
 
 ### Option 2: Editing the pipeline file
 
-Copy the same pipeline template to your pipeline file. Then fill out the required values according to the references and comments below.
+If you are familiar with Azure Pipeline and Notation, start with a template pipeline file will be efficient to use Notation tasks. 
+
+Copy the same pipeline template below to your pipeline file. Then fill out the required values according to the references and comments below.
 
 <details>
 
@@ -103,6 +120,7 @@ steps:
   inputs:
     command: 'sign'
     plugin: 'azureKeyVault'
+    akvPluginVersion: <azure_key_vault_plugin_version>
     azurekvServiceConection: <your_akv_service_connection>
     keyid: <your_key_id>
     selfSigned: true
@@ -124,6 +142,7 @@ steps:
     artifactRefs: '<registry_host>/<repository>@<digest>'
     command: 'sign'
     plugin: 'azureKeyVault'
+    akvPluginVersion: <azure_key_vault_plugin_version>
     azurekvServiceConection: <akv_service_connection>
     keyid: <key_id>
     selfSigned: true
