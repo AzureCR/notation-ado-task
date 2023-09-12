@@ -35,29 +35,40 @@ async function extractBinary(filePath: string, extractPath: string): Promise<str
 
 // Get the download URL and checksum for the notation binary 
 // based on the version
-export function getDownloadInfo(versionRange: string, versionFileName: string): { version: string, url: string, checksum: string } {
+export function getDownloadInfo(versionPrefix: string, versionFileName: string): { version: string, url: string, checksum: string } {
     const versionFile = path.join(__dirname, '..', '..', 'data', versionFileName);
     const versionData = fs.readFileSync(versionFile, 'utf8');
     const versionList = JSON.parse(versionData);
 
     for (const versionSuite of versionList) {
-        if (isMatch(versionSuite["version"], versionRange)) {
+        if (isMatch(versionSuite["version"], versionPrefix)) {
             return fetchTarget(versionSuite);
         }
     }
 
-    throw new Error(`No version satisfies the range: ${versionRange}`)
+    throw new Error(`No version satisfies the requirement: ${versionPrefix}`)
 }
 
-function isMatch(version: string, versionRange: string): boolean {
+function isMatch(version: string, versionPrefix: string): boolean {
     // if the version range is for pre-release version, it needs to match 
     // the full version
-    if (versionRange.includes('-')) {
-        return versionRange === version;
+    if (versionPrefix.includes('-')) {
+        return versionPrefix === version;
     }
 
-    // for main version, it only needs to match the prefix
-    return version.startsWith(versionRange);
+    // for released version, it only needs to match the prefix
+    const versionParts = version.split('.'); // major.minor.patch
+    const versionPrefixParts = versionPrefix.split('.');
+    if (versionPrefixParts.length > versionParts.length) {
+        throw new Error(`Invalid version prefix: ${versionPrefix}`);
+    }
+
+    for (let i = 0; i < versionPrefixParts.length; i++) {
+        if (versionPrefixParts[i] !== versionParts[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function fetchTarget(versionSuite: any): { version: string, url: string, checksum: string } {

@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 77
+        "Patch": 80
     },
     "groups": [
         {
@@ -117,7 +117,7 @@
             "defaultValue": false,
             "required": false,
             "visibleRule": "command = sign || command = verify",
-            "helpMarkDown": "Use the Referrers API to sign signatures, if not supported (returns 404), fallback to the Referrers tag schema",
+            "helpMarkDown": "Use the Referrers API to sign signatures, if not supported (returns 404), fallback to the Referrers tag schema.",
             "groupName": "advancedConfig"
         },
         {
@@ -129,6 +129,16 @@
             "options": {
                 "azureKeyVault": "Azure Key Vault Plugin"
             },
+            "groupName": "pluginConfig"
+        },
+        {
+            "name": "akvPluginVersion",
+            "type": "string",
+            "label": "Plugin Version",
+            "defaultValue": "1.0.1",
+            "required": true,
+            "helpMarkDown": "The version of the Azure Key Vualt plugin to be install. please visit the [release page](https://github.com/Azure/notation-azure-kv/releases) for the available versions.",
+            "visibleRule": "plugin = azureKeyVault",
             "groupName": "pluginConfig"
         },
         {

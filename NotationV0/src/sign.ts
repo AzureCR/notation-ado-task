@@ -25,10 +25,11 @@ export async function sign(): Promise<void> {
     switch (pluginName) {
         case 'azureKeyVault':
             // azure-kv plugin specific inputs
+            const akvPluginVersion = taskLib.getInput('akvPluginVersion', true) || '';
             const caCertBundle = taskLib.getInput('caCertBundle', false) || '';
             const selfSignedCert = taskLib.getBoolInput('selfSigned', false);
             const keyVaultPluginEnv = { ...env, ...await getVaultCredentials() }
-            await installAzureKV();
+            await installAzureKV(akvPluginVersion);
             await notationRunner(artifactRefs, async (artifactRef: string) => {
                 return taskLib.tool(NOTATION_BINARY)
                     .arg(['sign', artifactRef,
@@ -48,7 +49,7 @@ export async function sign(): Promise<void> {
 }
 
 // install azurekv plugin
-async function installAzureKV(): Promise<void> {
+async function installAzureKV(versionPrefix: string): Promise<void> {
     // check if the plugin is already installed
     let binaryName = 'notation-azure-kv';
     if (os.platform() == 'win32') {
@@ -61,6 +62,6 @@ async function installAzureKV(): Promise<void> {
     }
 
     // get azure-kv latest v1.x download info
-    const downloadInfo = getDownloadInfo("1", AZURE_KV_PLUGIN_VERSION_FILE);
+    const downloadInfo = getDownloadInfo(versionPrefix, AZURE_KV_PLUGIN_VERSION_FILE);
     await installFromURL(downloadInfo.url, downloadInfo.checksum, pluginDir);
 }
