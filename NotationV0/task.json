@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 84
+        "Patch": 88
     },
     "groups": [
         {
@@ -31,7 +31,7 @@
             "visibleRule": "command = sign || command = verify"
         }
     ],
-    "instanceNameFormat": "Install Notation $(notationVersion)",
+    "instanceNameFormat": "$(command)",
     "inputs": [
         {
             "name": "command",
@@ -103,8 +103,8 @@
             "defaultValue": "cose",
             "required": false,
             "options": {
-                "cose": "cose",
-                "jws": "jws"
+                "cose": "COSE",
+                "jws": "JWS"
             },
             "visibleRule": "command = sign",
             "helpMarkDown": "Signature envelope format, options: \"jws\", \"cose\" (default \"jws\")",
@@ -218,9 +218,9 @@
         "ChecksumValidated": "Checksum validated: %s.",
         "ChecksumValidationFailed": "Checksum validation failed. Expected: %s, Actual: %s.",
         "FailedArtifacts": "Failed artifacts: %s.",
-        "FailedToAddCertToTrustStore": "Failed to add certificate to trust store: %s.",
+        "FailedToAddCertToTrustStore": "Failed to add a certificate to trust store: %s.",
         "FailedToImportTrustPolicy": "Failed to import trust policy: %s.",
-        "FailedToListTrustStore": "Failed to list trust store.",
+        "FailedToListTrustStore": "Failed to list the trust store.",
         "FailedToShowTrustPolicy": "Failed to show trust policy.",
         "GotArtifactRefsFromDockerTask": "Got artifact references from Docker task.", 
         "InvalidResourceURI": "Invalid resource URI: %s.",
@@ -233,7 +233,7 @@
         "NotationAlreadyInstalled": "Notation is already installed, please do not install it again.",
         "NotationInstalledFromURL": "Notation is installed from %s.",
         "NotationInstalledFromVersion": "Notation v%s is installed.",
-        "NoServiceConnection": "No Azure Key Vualt service connection endpoint is specified.",
+        "NoServiceConnection": "No Azure Key Vault service connection endpoint is specified.",
         "UnsupportedArchitecture": "Unsupported architecture: %s.",
         "UnsupportedFileExtension": "Unsupported file extension: %s.",
         "UnsupportedPlatform": "Unsupported platform: %s.",
