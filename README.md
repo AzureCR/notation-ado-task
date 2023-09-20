@@ -44,13 +44,13 @@ steps:
     command: 'buildAndPush'
     Dockerfile: './Dockerfile'
 # install notation
-- task: notation@0
+- task: Notation@0
   inputs:
     command: 'install'
     version: '1.0.0'
 # automatically detect the artifact pushed by Docker task 
 # and sign the artifact.
-- task: notation@0
+- task: Notation@0
   inputs:
     version: '1.0.0'
     command: 'sign'
@@ -73,12 +73,12 @@ steps:
     containerRegistry: <docker_registry_service_connection>
     command: 'login'
 # install notation
-- task: notation@0
+- task: Notation@0
   inputs:
     command: 'install'
     version: '1.0.0'
 # sign the artifact
-- task: notation@0
+- task: Notation@0
   inputs:
     artifactRefs: '<registry_host>/<repository>@<digest>'
     command: 'sign'
@@ -102,7 +102,7 @@ steps:
     containerRegistry: <docker_registry_service_connection>
     command: 'login'
 # notation verify
-- task: notation@0
+- task: Notation@0
   inputs:
     command: 'verify'
     artifactRefs: '<registry_host>/<repository>@<digest>'
