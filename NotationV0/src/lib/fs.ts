@@ -1,12 +1,13 @@
 import * as os from 'os';
 import * as path from 'path';
+import * as taskLib from 'azure-pipelines-task-lib/task';
 
 export function getConfigHome(): string {
     const platform = os.platform();
     switch (platform) {
         case 'win32':
             if (!process.env.APPDATA) {
-                throw new Error('APPDATA is undefined');
+                throw new Error(taskLib.loc('APPDATANotSet'));
             }
             return process.env.APPDATA;
         case 'darwin':

@@ -1,3 +1,5 @@
+import * as taskLib from 'azure-pipelines-task-lib/task';
+
 // notationRunner runs the notation command for each artifact.
 export async function notationRunner(artifactRefs: string[], runCommand: (artifactRef: string) => Promise<number>): Promise<void> {
     // run notation command for each artifact
@@ -14,11 +16,11 @@ export async function notationRunner(artifactRefs: string[], runCommand: (artifa
     }
 
     // output conclusion
-    console.log(`Total artifacts: ${artifactRefs.length}, succeeded: ${artifactRefs.length - failedArtifactRefs.length}, failed: ${failedArtifactRefs.length}`)
+    console.log(taskLib.loc('ResultSummary', artifactRefs.length, artifactRefs.length - failedArtifactRefs.length, failedArtifactRefs.length));
     if (succeededArtifactRefs.length > 0) {
-        console.log(`Succeeded artifacts: ${succeededArtifactRefs.join(', ')}`);
+        console.log(taskLib.loc('SucceededArtifacts', succeededArtifactRefs.join(', ')));
     }
     if (failedArtifactRefs.length > 0) {
-        throw new Error(`Failed artifacts: ${failedArtifactRefs.join(', ')}`);
+        throw new Error(taskLib.loc('FailedArtifacts', failedArtifactRefs.join(', ')));
     }
 }

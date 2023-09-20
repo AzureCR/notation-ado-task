@@ -5,12 +5,12 @@ import * as taskLib from 'azure-pipelines-task-lib/task';
 export async function getVaultCredentials(): Promise<{ [key: string]: string }> {
     let connectedService = taskLib.getInput("azurekvServiceConection", true);
     if (!connectedService) {
-        console.log("No Azure Key Vualt service connection endpoint is specified");
+        console.log(taskLib.loc('NoServiceConnection'));
         return {};
     }
     var authScheme = taskLib.getEndpointAuthorizationScheme(connectedService, true);
     if (!authScheme) {
-        console.log("No authentication scheme is specified");
+        console.log(taskLib.loc('NoAuthScheme'));
         return {};
     }
 
@@ -18,7 +18,7 @@ export async function getVaultCredentials(): Promise<{ [key: string]: string }> 
     switch (authScheme.toLocaleLowerCase()) {
         case "managedserviceidentity":
             // azure key vault plugin will automatially try managed idenitty
-            console.log("Use managed idenity to access Azure Key Vault");
+            console.log(taskLib.loc('UseManagedIdentity'));
             break;
         case "serviceprincipal":
             let authType = taskLib.getEndpointAuthorizationParameter(connectedService, 'authenticationType', true);
@@ -31,7 +31,7 @@ export async function getVaultCredentials(): Promise<{ [key: string]: string }> 
                 let certificateContent = taskLib.getEndpointAuthorizationParameter(connectedService, "servicePrincipalCertificate", false);
                 let tempDir = taskLib.getVariable('Agent.TempDirectory') || taskLib.getVariable('system.DefaultWorkingDirectory');
                 if (!tempDir) {
-                    throw new Error('Agent.TempDirectory or system.DefaultWorkingDirectory is not set');
+                    throw new Error(taskLib.loc('TempDirectoryOrWorkingDirectoryNotSet'));
                 }
                 cliPassword = path.join(tempDir, 'spnCert.pem');
                 fs.writeFileSync(cliPassword, certificateContent);
@@ -52,7 +52,7 @@ export async function getVaultCredentials(): Promise<{ [key: string]: string }> 
             }
             break;
         default:
-            throw new Error(`Unsupported authentication scheme ${authScheme}`);
+            throw new Error(taskLib.loc('UnsupportedAuthScheme', authScheme));
     }
     return envVariables;
 }
