@@ -1,5 +1,4 @@
 {
-  "loc.friendlyName": "Notation",
   "loc.description": "Azure Pipepine Task for setting up Notation CLI, sign and verify with Notation",
   "loc.helpMarkDown": "",
   "loc.groups.display.commandConfig": "Command Configuration",
