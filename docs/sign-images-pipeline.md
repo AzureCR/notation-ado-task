@@ -70,14 +70,14 @@ Similarly, search the `Docker` task from the pipeline editing panel again. We us
 
 - Input the repository name to **Container repository**.
 - Choose **buildAndPush** from the the **Command** drop-down list.
-- Specify the file path of Dockerfile. For example, use `./Dockerfile ` if your Dockerfile is stored in the root folder.
+- Specify the file path of Dockerfile. For example, use `./Dockerfile` if your Dockerfile is stored in the root folder.
 - Click **Add** to add the `notation sign` to the pipeline file left.
 
 Search the `Notation` task from the pipeline editing panel on the right side. 
 
 - Choose **Install** from the drop-down list **command to run**. Click **Add** to add the `notation install` task to the pipeline. 
 - Similarly, search the `Notation` task from the pipeline editing panel again and choose **Sign**. 
-- You can skip **Artifact references** since we sign an image using its latest digest that is built and pushed to the registry by a [Docker task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml). Instead, you can manually specify a digest using '<registry_host>/<repository>@<digest>'.
+- You can skip **Artifact references** since we sign an image using its latest digest that is built and pushed to the registry by a [Docker task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml). Instead, you can manually specify a digest using `<registry_host>/<repository>@<digest>`.
 - Fill out the plugin configuration in the form. We will use the default AKV plugin and the service connection created in the previous step. Copy your Key ID from your AKV into the **Key ID**.
 - Check the **Self-signed Certificate** box since we use a self-signed certificate for demonstration convenience. Instead, you can input your certificate file path in **Certificate Bundle File Path** if you want to use a CA issued certificate.
 - Click **Add** to add the `notation sign` to the pipeline file left.
@@ -111,12 +111,12 @@ steps:
     command: 'buildAndPush'
     Dockerfile: './Dockerfile'
 # install notation
-- task: notation@0
+- task: Notation@0
   inputs:
     command: 'install'
     version: '1.0.0'
 # automatically detect the artifact pushed by Docker task and sign the artifact.
-- task: notation@0
+- task: Notation@0
   inputs:
     command: 'sign'
     plugin: 'azureKeyVault'
@@ -137,7 +137,7 @@ steps:
 
 ```yaml
 # sign the artifact
-- task: notation@0
+- task: Notation@0
   inputs:
     artifactRefs: '<registry_host>/<repository>@<digest>'
     command: 'sign'
