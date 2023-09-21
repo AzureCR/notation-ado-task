@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 80
+        "Patch": 89
     },
     "groups": [
         {
@@ -31,7 +31,7 @@
             "visibleRule": "command = sign || command = verify"
         }
     ],
-    "instanceNameFormat": "Install Notation $(notationVersion)",
+    "instanceNameFormat": "$(command)",
     "inputs": [
         {
             "name": "command",
@@ -103,8 +103,8 @@
             "defaultValue": "cose",
             "required": false,
             "options": {
-                "cose": "cose",
-                "jws": "jws"
+                "cose": "COSE",
+                "jws": "JWS"
             },
             "visibleRule": "command = sign",
             "helpMarkDown": "Signature envelope format, options: \"jws\", \"cose\" (default \"jws\")",
@@ -202,8 +202,46 @@
         }
     ],
     "execution": {
-        "Node": {
+        "Node10": {
+            "target": "src/index.js"
+        },
+        "Node16": {
             "target": "src/index.js"
         }
+    },
+    "messages": {
+        "ArtifactRefs": "Artifact references: %s.",
+        "ArtifactRefsNotSpecified": "Artifact references are not specified.",
+        "APPDATANotSet": "APPDATA is not set.",
+        "AzureKVPluginAlreadyInstalled": "Azure Key Vault plugin is already installed.",
+        "CannotFindTrustStore": "Cannot find trust store directory: %s.",
+        "ChecksumValidated": "Checksum validated: %s.",
+        "ChecksumValidationFailed": "Checksum validation failed. Expected: %s, Actual: %s.",
+        "FailedArtifacts": "Failed artifacts: %s.",
+        "FailedToAddCertToTrustStore": "Failed to add a certificate to trust store: %s.",
+        "FailedToImportTrustPolicy": "Failed to import trust policy: %s.",
+        "FailedToListTrustStore": "Failed to list the trust store.",
+        "FailedToShowTrustPolicy": "Failed to show trust policy.",
+        "GotArtifactRefsFromDockerTask": "Got artifact references from Docker task.", 
+        "InvalidResourceURI": "Invalid resource URI: %s.",
+        "InvalidVersionPrefix": "Invalid version prefix: %s.",
+        "ResultSummary": "Total artifacts: %s, succeeded: %s, failed: %s.",
+        "SucceededArtifacts": "Succeeded artifacts: %s.",
+        "TempDirectoryNotSet": "Agent.TempDirectory is not set.",
+        "TempDirectoryOrWorkingDirectoryNotSet": "Agent.TempDirectory or system.DefaultWorkingDirectory is not set",
+        "NoAuthScheme": "No authentication scheme is specified.",
+        "NotationAlreadyInstalled": "Notation is already installed, please do not install it again.",
+        "NotationInstalledFromURL": "Notation is installed from %s.",
+        "NotationInstalledFromVersion": "Notation v%s is installed.",
+        "NoServiceConnection": "No Azure Key Vault service connection endpoint is specified.",
+        "UnsupportedArchitecture": "Unsupported architecture: %s.",
+        "UnsupportedFileExtension": "Unsupported file extension: %s.",
+        "UnsupportedPlatform": "Unsupported platform: %s.",
+        "UnsupportedVersion": "Unsupported version: %s.",
+        "UseManagedIdentity": "Use managed identity to access Azure Key Vault.",
+        "UnknownCommand": "Unknown command: %s.",
+        "UnknownError": "An unknown error occurred.",
+        "UnknownPlugin": "Unknown plugin: %s.",
+        "UnsupportedAuthScheme": "Unsupported authentication scheme: %s."
     }
 }

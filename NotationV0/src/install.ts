@@ -16,11 +16,8 @@ export async function install(): Promise<void> {
         downloadURL = taskLib.getInput('url', true) || '';
         checksum = taskLib.getInput('checksum', true) || '';
     } else {
-        const versionRange = taskLib.getInput('version', true);
-        if (!versionRange) {
-            throw new Error('Version is not specified');
-        }
-        const downloadInfo = getDownloadInfo(versionRange, NOTATION_VERSION_FILE);
+        const versionPrefix = taskLib.getInput('version', true) || '';
+        const downloadInfo = getDownloadInfo(versionPrefix, NOTATION_VERSION_FILE);
         version = downloadInfo.version;
         downloadURL = downloadInfo.url;
         checksum = downloadInfo.checksum;
@@ -29,7 +26,7 @@ export async function install(): Promise<void> {
     // install notation binary
     const extractPath = taskLib.getVariable('Agent.TempDirectory');
     if (!extractPath) {
-        throw new Error('Agent.TempDirectory is not set');
+        throw new Error(taskLib.loc('TempDirectoryNotSet'));
     }
     await installFromURL(downloadURL, checksum, extractPath);
 
@@ -39,8 +36,8 @@ export async function install(): Promise<void> {
     process.env['PATH'] = `${extractPath}${path.delimiter}${process.env['PATH']}`;
 
     if (!version) {
-        console.log(`Notation is installed from ${downloadURL}`);
+        console.log(taskLib.loc('NotationInstalledFromURL', downloadURL));
     } else {
-        console.log(`Notation v${version} is installed`);
+        console.log(taskLib.loc('NotationInstalledFromVersion', version));
     }
 }

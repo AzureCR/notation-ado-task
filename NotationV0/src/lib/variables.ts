@@ -7,15 +7,15 @@ export function getArtifactReferences(): string[] {
     const artifactRefsInput = taskLib.getInput('artifactRefs', false);
     if (!artifactRefsInput) {
         artifactRefs = getArtifactReferencesFromDockerTask();
-        console.log("Got the artifact references from Docker task.")
+        console.log(taskLib.loc('GotArtifactRefsFromDockerTask'));
     } else {
         artifactRefs = artifactRefsInput.split(',');
     }
 
     if (artifactRefs.length === 0) {
-        throw new Error('Artifact references are not specified');
+        throw new Error(taskLib.loc('ArtifactRefsNotSpecified'));
     }
-    console.log(`Artifact references: ${artifactRefs}`)
+    console.log(taskLib.loc('ArtifactRefs', artifactRefs));
     return artifactRefs;
 }
 
@@ -32,7 +32,7 @@ function getArtifactReferencesFromDockerTask(): string[] {
     for (const uri of resourceURIArray) {
         const parts = uri.split('://');
         if (parts.length !== 2) {
-            throw new Error(`Invalid resource URI: ${uri}`);
+            throw new Error(taskLib.loc('InvalidResourceURI', uri));
         }
         references.push(parts[1]);
     }

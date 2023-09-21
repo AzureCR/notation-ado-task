@@ -14,9 +14,9 @@ export async function installFromURL(downloadURL: string, expectedChecksum: stri
     // Validate checksum
     const checksum = await computeChecksum(downloadPath);
     if (expectedChecksum !== checksum) {
-        throw new Error(`Checksum validation failed. Expected: "${expectedChecksum}" Actual: "${checksum}"`);
+        throw new Error(taskLib.loc('ChecksumValidationFailed', expectedChecksum, checksum));
     }
-    console.log(`Checksum validated: ${expectedChecksum}`);
+    console.log(taskLib.loc('ChecksumValidated', expectedChecksum));
 
     taskLib.mkdirP(extractPath);
 
@@ -30,7 +30,7 @@ async function extractBinary(filePath: string, extractPath: string): Promise<str
     } else if (filePath.endsWith('.tar.gz')) {
         return toolLib.extractTar(filePath, extractPath);
     }
-    throw new Error(`Unsupported file extension: ${path.extname(filePath)}`);
+    throw new Error(taskLib.loc('UnsupportedFileExtension', path.extname(filePath)));
 }
 
 // Get the download URL and checksum for the notation binary 
@@ -46,7 +46,7 @@ export function getDownloadInfo(versionPrefix: string, versionFileName: string):
         }
     }
 
-    throw new Error(`No version satisfies the requirement: ${versionPrefix}`)
+    throw new Error(taskLib.loc('UnsupportedVersion', versionPrefix));
 }
 
 function isMatch(version: string, versionPrefix: string): boolean {
@@ -60,7 +60,7 @@ function isMatch(version: string, versionPrefix: string): boolean {
     const versionParts = version.split('.'); // major.minor.patch
     const versionPrefixParts = versionPrefix.split('.');
     if (versionPrefixParts.length > versionParts.length) {
-        throw new Error(`Invalid version prefix: ${versionPrefix}`);
+        throw new Error(taskLib.loc('InvalidVersionPrefix', versionPrefix));
     }
 
     for (let i = 0; i < versionPrefixParts.length; i++) {
@@ -75,11 +75,11 @@ function fetchTarget(versionSuite: any): { version: string, url: string, checksu
     const platform = getPlatform();
     const arch = getArch();
     if (!(platform in versionSuite)) {
-        throw new Error(`The platform ${platform} is not supported`);
+        throw new Error(taskLib.loc('UnsupportedPlatform', platform));
     }
 
     if (!(arch in versionSuite[platform])) {
-        throw new Error(`The arch ${arch} is not supported`);
+        throw new Error(taskLib.loc('UnsupportedArchitecture', arch));
     }
 
     return {
@@ -99,7 +99,7 @@ function getPlatform(): string {
         case 'win32':
             return 'windows';
         default:
-            throw new Error(`Unsupported platform: ${platform}`);
+            throw new Error(taskLib.loc('UnsupportedPlatform', platform));
     }
 }
 
@@ -111,6 +111,6 @@ function getArch(): string {
         case 'arm64':
             return 'arm64';
         default:
-            throw new Error(`Unsupported architecture: ${architecture}`);
+            throw new Error(taskLib.loc('UnsupportedArchitecture', architecture));
     }
 }

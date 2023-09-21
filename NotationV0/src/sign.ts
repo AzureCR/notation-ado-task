@@ -44,7 +44,7 @@ export async function sign(): Promise<void> {
             })
             break;
         default:
-            throw new Error(`Unknown plugin: ${pluginName}`);
+            throw new Error(taskLib.loc('UnknownPlugin', pluginName));
     }
 }
 
@@ -57,7 +57,7 @@ async function installAzureKV(versionPrefix: string): Promise<void> {
     }
     const pluginDir = path.join(getConfigHome(), NOTATION, PLUGINS, 'azure-kv');
     if (taskLib.exist(path.join(pluginDir, binaryName))) {
-        console.log('notation-azure-kv plugin is already installed');
+        console.log(taskLib.loc('AzureKVPluginAlreadyInstalled'));
         return;
     }
 

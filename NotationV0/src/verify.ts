@@ -41,14 +41,14 @@ async function configTrustPolicy(trustPolicy: string): Promise<void> {
         .arg(['policy', 'import', '--force', trustPolicy])
         .exec();
     if (code !== 0) {
-        throw new Error(`Failed to import trust policy: ${trustPolicy}`);
+        throw new Error(taskLib.loc('FailedToImportTrustPolicy', trustPolicy));
     }
 
     code = await taskLib.tool(NOTATION_BINARY)
         .arg(['policy', 'show'])
         .exec();
     if (code !== 0) {
-        throw new Error(`Failed to show trust policy`);
+        throw new Error(taskLib.loc('FailedToShowTrustPolicy'));
     }
 }
 
@@ -57,7 +57,7 @@ async function configTrustPolicy(trustPolicy: string): Promise<void> {
 async function configTrustStore(dir: string): Promise<void> {
     const trustStoreX509 = path.join(dir, X509); // .github/truststore/x509
     if (!taskLib.exist(trustStoreX509)) {
-        throw new Error(`cannot find trust store dir: ${trustStoreX509}`);
+        throw new Error(taskLib.loc('CannotFindTrustStore', trustStoreX509));
     }
 
     // traverse all trust store types
@@ -76,7 +76,7 @@ async function configTrustStore(dir: string): Promise<void> {
                 .arg(['cert', 'add', '--type', trustStoreType, '--store', trustStore, ...certs])
                 .exec();
             if (code !== 0) {
-                throw new Error(`Failed to add cert to trust store: ${trustStore}`);
+                throw new Error(taskLib.loc('FailedToAddCertToTrustStore', trustStore));
             }
         }
     }
@@ -86,7 +86,7 @@ async function configTrustStore(dir: string): Promise<void> {
         .arg(['cert', 'list'])
         .exec();
     if (code !== 0) {
-        throw new Error(`Failed to list trust store`);
+        throw new Error(taskLib.loc('FailedToListTrustStore'));
     }
 }
 
