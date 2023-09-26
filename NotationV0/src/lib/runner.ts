@@ -1,15 +1,22 @@
+import * as os from 'os';
 import * as taskLib from 'azure-pipelines-task-lib/task';
 
+import { IExecOptions, ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
+import { NOTATION, STATUS, WARNING } from './constants';
+
+import { Writable } from 'stream';
+
 // notationRunner runs the notation command for each artifact.
-export async function notationRunner(artifactRefs: string[], runCommand: (artifactRef: string) => Promise<number>): Promise<void> {
+export async function notationRunner(artifactRefs: string[], runCommand: (notation: ToolRunner, artifactRef: string, execOptions: IExecOptions) => Promise<number>): Promise<void> {
     // run notation command for each artifact
     let failedArtifactRefs = [];
     let succeededArtifactRefs = [];
     for (const artifactRef of artifactRefs) {
-        const code = await runCommand(artifactRef)
+        let outStrem = new WarningStream();
+        const code = await runCommand(taskLib.tool(NOTATION), artifactRef, { outStream: outStrem });
         if (code !== 0) {
             failedArtifactRefs.push(artifactRef);
-            continue
+            continue;
         }
 
         succeededArtifactRefs.push(artifactRef);
@@ -23,4 +30,31 @@ export async function notationRunner(artifactRefs: string[], runCommand: (artifa
     if (failedArtifactRefs.length > 0) {
         throw new Error(taskLib.loc('FailedArtifacts', failedArtifactRefs.join(', ')));
     }
+
+}
+
+// WarningStream is a writable stream that extracts warnings from logs.
+class WarningStream extends Writable {
+  private buffer: string;
+
+  constructor() {
+    super();
+    this.buffer = '';
+  }
+
+  _write(chunk: Buffer, encoding: string, callback: () => void) {
+    this.buffer += chunk.toString();
+    const lines = this.buffer.split('\n');
+    this.buffer = lines.pop() || '';
+    // extract warnings from logs
+    for (const line of lines) {
+        if (line.startsWith('Warning:')) {
+            taskLib.warning(line);
+            taskLib.setTaskVariable(STATUS, WARNING);
+        } else {
+            console.log(line);
+        }
+    }
+    callback();
+  }
 }

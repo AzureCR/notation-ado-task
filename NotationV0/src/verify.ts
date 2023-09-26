@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
 
+import { IExecOptions, ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 import { NOTATION, NOTATION_BINARY, TRUST_STORE, X509 } from './lib/constants';
 
 import { getArtifactReferences } from './lib/variables';
@@ -26,12 +27,13 @@ export async function verify(): Promise<void> {
     }
 
     // run notation verify for each artifact
-    await notationRunner(artifactRefs, async (artifactRef: string) => {
-        return taskLib.tool(NOTATION_BINARY)
+    await notationRunner(artifactRefs, async (notation: ToolRunner, artifactRef: string, execOptions: IExecOptions) => {
+        execOptions.env = env;
+        return notation
             .arg(['verify', artifactRef, '--verbose'])
             .argIf(allowReferrerAPI, '--allow-referrers-api')
             .argIf(debug && debug.toLowerCase() === 'true', '--debug')
-            .exec({ env: env });
+            .exec(execOptions);
     })
 }
 
