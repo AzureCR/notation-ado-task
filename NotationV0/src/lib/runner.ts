@@ -30,7 +30,6 @@ export async function notationRunner(artifactRefs: string[], runCommand: (notati
     if (failedArtifactRefs.length > 0) {
         throw new Error(taskLib.loc('FailedArtifacts', failedArtifactRefs.join(', ')));
     }
-
 }
 
 // WarningStream is a writable stream that extracts warnings from logs.
@@ -46,9 +45,9 @@ class WarningStream extends Writable {
     this.buffer += chunk.toString();
     const lines = this.buffer.split('\n');
     this.buffer = lines.pop() || '';
-    // extract warnings from logs
+    // extract warnings related to security from logs
     for (const line of lines) {
-        if (line.startsWith('Warning:')) {
+        if (line.startsWith('Warning: Always sign the artifact using the digest')) {
             taskLib.warning(line);
             taskLib.setTaskVariable(STATUS, WARNING);
         } else {
