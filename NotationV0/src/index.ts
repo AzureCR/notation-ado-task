@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
-
+import { FAILED, STATUS, SUCCEEDED, WARNING } from './lib/constants';
 import { NOTATION_BINARY } from './lib/constants';
 import { install } from './install';
 import { sign } from './sign'
@@ -31,7 +31,14 @@ async function run() {
             default:
                 throw new Error(taskLib.loc('UnknownCommand', command));
         }
+
+        if (taskLib.getTaskVariable(STATUS) === WARNING) {
+            taskLib.setVariable(STATUS, WARNING, false, true);
+        } else {
+            taskLib.setVariable(STATUS, SUCCEEDED, false, true);
+        }
     } catch (err: unknown) {
+        taskLib.setVariable(STATUS, FAILED, false, true);
         if (err instanceof Error) {
             taskLib.setResult(taskLib.TaskResult.Failed, err.message);
         } else {

@@ -10,7 +10,7 @@
   "version": {
     "Major": 0,
     "Minor": 2,
-    "Patch": 89
+    "Patch": 105
   },
   "groups": [
     {
@@ -222,10 +222,11 @@
     "FailedToImportTrustPolicy": "ms-resource:loc.messages.FailedToImportTrustPolicy",
     "FailedToListTrustStore": "ms-resource:loc.messages.FailedToListTrustStore",
     "FailedToShowTrustPolicy": "ms-resource:loc.messages.FailedToShowTrustPolicy",
-    "GotArtifactRefsFromDockerTask": "ms-resource:loc.messages.GotArtifactRefsFromDockerTask",
+    "TryToGetArtifactRefsFromDockerTask": "ms-resource:loc.messages.TryToGetArtifactRefsFromDockerTask",
     "InvalidResourceURI": "ms-resource:loc.messages.InvalidResourceURI",
     "InvalidVersionPrefix": "ms-resource:loc.messages.InvalidVersionPrefix",
     "ResultSummary": "ms-resource:loc.messages.ResultSummary",
+    "RepeatedArtifactRef": "Repeated artifact reference: %s.",
     "SucceededArtifacts": "ms-resource:loc.messages.SucceededArtifacts",
     "TempDirectoryNotSet": "ms-resource:loc.messages.TempDirectoryNotSet",
     "TempDirectoryOrWorkingDirectoryNotSet": "ms-resource:loc.messages.TempDirectoryOrWorkingDirectoryNotSet",
@@ -245,4 +246,3 @@
     "UnsupportedAuthScheme": "ms-resource:loc.messages.UnsupportedAuthScheme"
   }
 }
-     

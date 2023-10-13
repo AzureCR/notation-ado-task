@@ -1,10 +1,9 @@
 import * as os from 'os';
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
-
 import { AZURE_KV_PLUGIN_VERSION_FILE, NOTATION, NOTATION_BINARY, PLUGINS } from './lib/constants';
+import { IExecOptions, ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 import { getDownloadInfo, installFromURL } from './lib/install';
-
 import { getArtifactReferences } from './lib/variables';
 import { getConfigHome } from './lib/fs';
 import { getVaultCredentials } from './lib/credentials';
@@ -30,8 +29,9 @@ export async function sign(): Promise<void> {
             const selfSignedCert = taskLib.getBoolInput('selfSigned', false);
             const keyVaultPluginEnv = { ...env, ...await getVaultCredentials() }
             await installAzureKV(akvPluginVersion);
-            await notationRunner(artifactRefs, async (artifactRef: string) => {
-                return taskLib.tool(NOTATION_BINARY)
+            await notationRunner(artifactRefs, async (notation: ToolRunner, artifactRef: string, execOptions: IExecOptions) => {
+                execOptions.env = keyVaultPluginEnv;
+                return notation
                     .arg(['sign', artifactRef,
                         '--plugin', 'azure-kv',
                         '--id', keyid,
@@ -40,7 +40,7 @@ export async function sign(): Promise<void> {
                     .argIf(caCertBundle, `--plugin-config=ca_certs=${caCertBundle}`)
                     .argIf(selfSignedCert, '--plugin-config=self_signed=true')
                     .argIf(debug && debug.toLowerCase() === 'true', '--debug')
-                    .exec({ env: keyVaultPluginEnv });
+                    .exec(execOptions);
             })
             break;
         default:
@@ -58,10 +58,10 @@ async function installAzureKV(versionPrefix: string): Promise<void> {
     const pluginDir = path.join(getConfigHome(), NOTATION, PLUGINS, 'azure-kv');
     if (taskLib.exist(path.join(pluginDir, binaryName))) {
         console.log(taskLib.loc('AzureKVPluginAlreadyInstalled'));
-        return;
+    } else {
+        // get azure-kv latest v1.x download info
+        const downloadInfo = getDownloadInfo(versionPrefix, AZURE_KV_PLUGIN_VERSION_FILE);
+        await installFromURL(downloadInfo.url, downloadInfo.checksum, pluginDir);
     }
-
-    // get azure-kv latest v1.x download info
-    const downloadInfo = getDownloadInfo(versionPrefix, AZURE_KV_PLUGIN_VERSION_FILE);
-    await installFromURL(downloadInfo.url, downloadInfo.checksum, pluginDir);
+    taskLib.tool(NOTATION_BINARY).arg(['plugin', 'list']).execSync();
 }

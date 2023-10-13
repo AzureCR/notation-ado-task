@@ -8,3 +8,9 @@ export const TRUST_STORE = 'truststore';
 export const NOTATION = 'notation';
 export const NOTATION_BINARY = 'notation';
 export const X509 = 'x509';
+
+// status
+export const STATUS = 'Status';
+export const SUCCEEDED = 'Succeeded';
+export const FAILED = 'Failed';
+export const WARNING = 'Warning';

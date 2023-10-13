@@ -10,7 +10,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 89
+        "Patch": 105
     },
     "groups": [
         {
@@ -222,10 +222,11 @@
         "FailedToImportTrustPolicy": "Failed to import trust policy: %s.",
         "FailedToListTrustStore": "Failed to list the trust store.",
         "FailedToShowTrustPolicy": "Failed to show trust policy.",
-        "GotArtifactRefsFromDockerTask": "Got artifact references from Docker task.", 
+        "TryToGetArtifactRefsFromDockerTask": "Try to get artifact references from Docker task.",
         "InvalidResourceURI": "Invalid resource URI: %s.",
         "InvalidVersionPrefix": "Invalid version prefix: %s.",
         "ResultSummary": "Total artifacts: %s, succeeded: %s, failed: %s.",
+        "RepeatedArtifactRef": "Repeated artifact reference: %s.",
         "SucceededArtifacts": "Succeeded artifacts: %s.",
         "TempDirectoryNotSet": "Agent.TempDirectory is not set.",
         "TempDirectoryOrWorkingDirectoryNotSet": "Agent.TempDirectory or system.DefaultWorkingDirectory is not set",
