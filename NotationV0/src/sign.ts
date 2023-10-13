@@ -1,11 +1,9 @@
 import * as os from 'os';
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
-
 import { AZURE_KV_PLUGIN_VERSION_FILE, NOTATION, NOTATION_BINARY, PLUGINS } from './lib/constants';
 import { IExecOptions, ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 import { getDownloadInfo, installFromURL } from './lib/install';
-
 import { getArtifactReferences } from './lib/variables';
 import { getConfigHome } from './lib/fs';
 import { getVaultCredentials } from './lib/credentials';

@@ -1,8 +1,6 @@
 import * as path from 'path';
 import * as taskLib from 'azure-pipelines-task-lib/task';
-
 import { getDownloadInfo, installFromURL } from './lib/install';
-
 import { NOTATION_VERSION_FILE } from './lib/constants';
 
 export async function install(): Promise<void> {

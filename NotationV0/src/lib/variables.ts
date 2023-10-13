@@ -1,5 +1,4 @@
 import * as taskLib from 'azure-pipelines-task-lib/task';
-
 import { STATUS, WARNING } from './constants';
 
 // get artifact references from input or from previous docker push task

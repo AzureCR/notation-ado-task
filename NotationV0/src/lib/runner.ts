@@ -1,10 +1,7 @@
-import * as os from 'os';
+import { Writable } from 'stream';
 import * as taskLib from 'azure-pipelines-task-lib/task';
-
 import { IExecOptions, ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 import { NOTATION, STATUS, WARNING } from './constants';
-
-import { Writable } from 'stream';
 
 // notationRunner runs the notation command for each artifact.
 export async function notationRunner(artifactRefs: string[], runCommand: (notation: ToolRunner, artifactRef: string, execOptions: IExecOptions) => Promise<number>): Promise<void> {
@@ -12,8 +9,8 @@ export async function notationRunner(artifactRefs: string[], runCommand: (notati
     let failedArtifactRefs = [];
     let succeededArtifactRefs = [];
     for (const artifactRef of artifactRefs) {
-        let outStrem = new WarningStream();
-        const code = await runCommand(taskLib.tool(NOTATION), artifactRef, { outStream: outStrem });
+        let outStream = new WarningStream();
+        const code = await runCommand(taskLib.tool(NOTATION), artifactRef, { outStream: outStream });
         if (code !== 0) {
             failedArtifactRefs.push(artifactRef);
             continue;
@@ -34,26 +31,26 @@ export async function notationRunner(artifactRefs: string[], runCommand: (notati
 
 // WarningStream is a writable stream that extracts warnings from logs.
 class WarningStream extends Writable {
-  private buffer: string;
+    private buffer: string;
 
-  constructor() {
-    super();
-    this.buffer = '';
-  }
-
-  _write(chunk: Buffer, encoding: string, callback: () => void) {
-    this.buffer += chunk.toString();
-    const lines = this.buffer.split('\n');
-    this.buffer = lines.pop() || '';
-    // extract warnings related to security from logs
-    for (const line of lines) {
-        if (line.startsWith('Warning: Always sign the artifact using the digest')) {
-            taskLib.warning(line);
-            taskLib.setTaskVariable(STATUS, WARNING);
-        } else {
-            console.log(line);
-        }
+    constructor() {
+        super();
+        this.buffer = '';
     }
-    callback();
-  }
+
+    _write(chunk: Buffer, encoding: string, callback: () => void) {
+        this.buffer += chunk.toString();
+        const lines = this.buffer.split('\n');
+        this.buffer = lines.pop() || '';
+        // extract warnings related to security from logs
+        for (const line of lines) {
+            if (line.startsWith('Warning: Always sign the artifact using the digest')) {
+                taskLib.warning(line);
+                taskLib.setTaskVariable(STATUS, WARNING);
+            } else {
+                console.log(line);
+            }
+        }
+        callback();
+    }
 }
