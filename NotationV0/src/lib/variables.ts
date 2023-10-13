@@ -23,8 +23,9 @@ export function getArtifactReferences(): string[] {
         if (uniqueArtifactRefs.has(artifactRef)) {
             taskLib.warning(taskLib.loc('RepeatedArtifactRef', artifactRef));
             taskLib.setTaskVariable(STATUS, WARNING);
+        } else {
+            uniqueArtifactRefs.add(artifactRef);
         }
-        uniqueArtifactRefs.add(artifactRef);
     }
 
     console.log(taskLib.loc('ArtifactRefs', artifactRefs));
