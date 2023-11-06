@@ -226,7 +226,7 @@
     "InvalidResourceURI": "ms-resource:loc.messages.InvalidResourceURI",
     "InvalidVersionPrefix": "ms-resource:loc.messages.InvalidVersionPrefix",
     "ResultSummary": "ms-resource:loc.messages.ResultSummary",
-    "RepeatedArtifactRef": "Repeated artifact reference: %s.",
+    "RepeatedArtifactRef": "ms-resource:loc.messages.RepeatedArtifactRef",
     "SucceededArtifacts": "ms-resource:loc.messages.SucceededArtifacts",
     "TempDirectoryNotSet": "ms-resource:loc.messages.TempDirectoryNotSet",
     "TempDirectoryOrWorkingDirectoryNotSet": "ms-resource:loc.messages.TempDirectoryOrWorkingDirectoryNotSet",
