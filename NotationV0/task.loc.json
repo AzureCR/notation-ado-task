@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-  "id": "a7d56ba6-35a6-453d-8192-8b602bf234bd",
+  "id": "f7d56ba6-35a6-453d-8192-8b602bf234bd",
   "name": "Notation",
-  "friendlyName": "ms-resource:loc.friendlyName",
+  "friendlyName": "Notation",
   "description": "ms-resource:loc.description",
   "helpMarkDown": "ms-resource:loc.helpMarkDown",
   "category": "Utility",
@@ -15,23 +15,23 @@
   "groups": [
     {
       "name": "commandConfig",
-      "displayName": "ms-resource:loc.group.displayName.commandConfig",
+      "displayName": "ms-resource:loc.groups.display.commandConfig",
       "isExpanded": true
     },
     {
       "name": "pluginConfig",
-      "displayName": "ms-resource:loc.group.displayName.pluginConfig",
+      "displayName": "ms-resource:loc.groups.display.pluginConfig",
       "isExpanded": true,
       "visibleRule": "command = sign"
     },
     {
       "name": "advancedConfig",
-      "displayName": "ms-resource:loc.group.displayName.advancedConfig",
+      "displayName": "ms-resource:loc.groups.display.advancedConfig",
       "isExpanded": false,
       "visibleRule": "command = sign || command = verify"
     }
   ],
-  "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
+  "instanceNameFormat": "$(command)",
   "inputs": [
     {
       "name": "command",
@@ -41,9 +41,9 @@
       "helpMarkDown": "ms-resource:loc.input.help.command",
       "required": true,
       "options": {
-        "install": "Install",
-        "sign": "Sign",
-        "verify": "Verify"
+        "install": "ms-resource:loc.input.label.install",
+        "sign": "ms-resource:loc.input.label.sign",
+        "verify": "ms-resource:loc.input.label.verify"
       }
     },
     {
@@ -127,7 +127,7 @@
       "defaultValue": "azureKeyVault",
       "required": true,
       "options": {
-        "azureKeyVault": "Azure Key Vault Plugin"
+        "azureKeyVault": "ms-resource:loc.input.label.azureKeyVault"
       },
       "groupName": "pluginConfig"
     },
@@ -226,7 +226,7 @@
     "InvalidResourceURI": "ms-resource:loc.messages.InvalidResourceURI",
     "InvalidVersionPrefix": "ms-resource:loc.messages.InvalidVersionPrefix",
     "ResultSummary": "ms-resource:loc.messages.ResultSummary",
-    "RepeatedArtifactRef": "ms-resource:loc.messages.RepeatedArtifactRef",
+    "RepeatedArtifactRef": "Repeated artifact reference: %s.",
     "SucceededArtifacts": "ms-resource:loc.messages.SucceededArtifacts",
     "TempDirectoryNotSet": "ms-resource:loc.messages.TempDirectoryNotSet",
     "TempDirectoryOrWorkingDirectoryNotSet": "ms-resource:loc.messages.TempDirectoryOrWorkingDirectoryNotSet",
