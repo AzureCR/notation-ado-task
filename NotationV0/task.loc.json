@@ -1,37 +1,37 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-  "id": "f7d56ba6-35a6-453d-8192-8b602bf234bd",
+  "id": "a7d56ba6-35a6-453d-8192-8b602bf234bd",
   "name": "Notation",
-  "friendlyName": "Notation",
+  "friendlyName": "ms-resource:loc.friendlyName",
   "description": "ms-resource:loc.description",
   "helpMarkDown": "ms-resource:loc.helpMarkDown",
   "category": "Utility",
   "author": "Notation Developers",
   "version": {
     "Major": 0,
-    "Minor": 2,
-    "Patch": 105
+    "Minor": 1,
+    "Patch": 0
   },
   "groups": [
     {
       "name": "commandConfig",
-      "displayName": "ms-resource:loc.groups.display.commandConfig",
+      "displayName": "ms-resource:loc.group.displayName.commandConfig",
       "isExpanded": true
     },
     {
       "name": "pluginConfig",
-      "displayName": "ms-resource:loc.groups.display.pluginConfig",
+      "displayName": "ms-resource:loc.group.displayName.pluginConfig",
       "isExpanded": true,
       "visibleRule": "command = sign"
     },
     {
       "name": "advancedConfig",
-      "displayName": "ms-resource:loc.groups.display.advancedConfig",
+      "displayName": "ms-resource:loc.group.displayName.advancedConfig",
       "isExpanded": false,
       "visibleRule": "command = sign || command = verify"
     }
   ],
-  "instanceNameFormat": "$(command)",
+  "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
   "inputs": [
     {
       "name": "command",
@@ -41,9 +41,9 @@
       "helpMarkDown": "ms-resource:loc.input.help.command",
       "required": true,
       "options": {
-        "install": "ms-resource:loc.input.label.install",
-        "sign": "ms-resource:loc.input.label.sign",
-        "verify": "ms-resource:loc.input.label.verify"
+        "install": "Install",
+        "sign": "Sign",
+        "verify": "Verify"
       }
     },
     {
@@ -127,7 +127,7 @@
       "defaultValue": "azureKeyVault",
       "required": true,
       "options": {
-        "azureKeyVault": "ms-resource:loc.input.label.azureKeyVault"
+        "azureKeyVault": "Azure Key Vault Plugin"
       },
       "groupName": "pluginConfig"
     },
@@ -226,7 +226,7 @@
     "InvalidResourceURI": "ms-resource:loc.messages.InvalidResourceURI",
     "InvalidVersionPrefix": "ms-resource:loc.messages.InvalidVersionPrefix",
     "ResultSummary": "ms-resource:loc.messages.ResultSummary",
-    "RepeatedArtifactRef": "Repeated artifact reference: %s.",
+    "RepeatedArtifactRef": "ms-resource:loc.messages.RepeatedArtifactRef",
     "SucceededArtifacts": "ms-resource:loc.messages.SucceededArtifacts",
     "TempDirectoryNotSet": "ms-resource:loc.messages.TempDirectoryNotSet",
     "TempDirectoryOrWorkingDirectoryNotSet": "ms-resource:loc.messages.TempDirectoryOrWorkingDirectoryNotSet",
